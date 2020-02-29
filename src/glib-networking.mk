@@ -9,7 +9,7 @@ $(PKG)_CHECKSUM := 6581056f351f8a311cbe40d6e77d0dd1d7f2385b910da63ec87a06074ec24
 $(PKG)_SUBDIR   := glib-networking-$($(PKG)_VERSION)
 $(PKG)_FILE     := glib-networking-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://download.gnome.org/sources/$(PKG)/$(call SHORT_PKG_VERSION,$(PKG))/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc meson-conf ninja glib openssl
+$(PKG)_DEPS     := cc meson-conf ninja glib gnutls openssl
 
 define $(PKG)_UPDATE
     $(call MXE_GET_GH_TAGS,GNOME/glib-networking) | \
