@@ -4,9 +4,9 @@ PKG             := pe-parse
 $(PKG)_WEBSITE  := https://github.com/trailofbits/pe-parse
 $(PKG)_DESCR    := Principled, lightweight C/C++ PE parser
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := c5e9a09
-$(PKG)_CHECKSUM := c09f8463da3c382b912c702f2e1bec85672b7c78ddb7e21182136a53df0f34fd
-$(PKG)_GH_CONF  := trailofbits/pe-parse/branches/master
+$(PKG)_VERSION  := 1.0.1
+$(PKG)_CHECKSUM := aa7ccb071eef7c9bf7d06eee0f38ea15450a44753ffb5f03a6e2493891a8f045
+$(PKG)_GH_CONF  := trailofbits/pe-parse/releases
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 $(PKG)_DEPS     := cc
 
