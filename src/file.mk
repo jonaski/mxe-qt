@@ -28,8 +28,7 @@ define $(PKG)_BUILD
     cd '$(1).native' && ./configure
     cd '$(1).native' && $(MAKE) -j '$(JOBS)'
 
-    cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS)
-    #CFLAGS=-DHAVE_PREAD
+    cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS) CFLAGS=-DHAVE_PREAD
     $(MAKE) -C '$(1)' -j '$(JOBS)' FILE_COMPILE='$(1).native/src/file'
     $(MAKE) -C '$(1)' -j 1 install
 
