@@ -26,7 +26,7 @@ jobs:
 
     - name: Set targets
       shell: bash
-      run: sed -i 's/MXE_TARGETS := .*/MXE_TARGETS := x86_64-w64-mingw32.shared/g' settings.mk
+      run: sed -i 's/MXE_TARGETS := .*/MXE_TARGETS := x86_64-w64-mingw32.static/g' settings.mk
 
     - name: Build icu4c
       shell: bash
@@ -39,7 +39,7 @@ jobs:
       shell: bash
       working-directory: ${{runner.workspace}}
       run: |
-        tar -cJf strawberry-mxe.tar.xz --dereference --exclude-vcs --exclude=".directory" --exclude=".git" --exclude="*_" --exclude="*.bak" strawberry-mxe
+        tar -cJf mxe-qt.tar.xz --dereference --exclude-vcs --exclude=".directory" --exclude=".git" --exclude="*_" --exclude="*.bak" mxe-qt
 
     - name: Upload archive
       shell: bash
@@ -55,4 +55,4 @@ jobs:
         ln -s /github/home/.ssh/gh_actions_key /root/.ssh/gh_actions_key
         echo "${ssh_key}" > ~/.ssh/gh_actions_key
         chmod 600 ~/.ssh/gh_actions_key
-        rsync -avz -e "ssh -p ${ssh_port} -i ~/.ssh/gh_actions_key -o StrictHostKeyChecking=no" strawberry-mxe.tar.xz ${ssh_user}@${ssh_host}:/home/travis/builds/
+        rsync -avz -e "ssh -p ${ssh_port} -i ~/.ssh/gh_actions_key -o StrictHostKeyChecking=no" mxe-qt.tar.xz ${ssh_user}@${ssh_host}:/home/travis/builds/
