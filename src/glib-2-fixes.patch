@@ -1,0 +1,30 @@
+diff -ruN glib-2.64.2.orig/glib/meson.build glib-2.64.2/glib/meson.build
+--- glib-2.64.2.orig/glib/meson.build	2020-04-09 15:43:10.000000000 +0200
++++ glib-2.64.2/glib/meson.build	2020-04-23 14:13:06.579352945 +0200
+@@ -388,16 +388,16 @@
+ # On Windows, glib needs a spawn helper for g_spawn* API
+ if host_system == 'windows'
+   if host_machine.cpu_family() == 'x86'
+-    executable('gspawn-win32-helper', 'gspawn-win32-helper.c',
+-      install : true,
+-      gui_app : true,
+-      include_directories : configinc,
+-      dependencies : [libglib_dep])
+-    executable('gspawn-win32-helper-console', 'gspawn-win32-helper.c',
+-      install : true,
+-      c_args : ['-DHELPER_CONSOLE'],
+-      include_directories : configinc,
+-      dependencies : [libglib_dep])
++    #executable('gspawn-win32-helper', 'gspawn-win32-helper.c',
++    #  install : true,
++    #  gui_app : true,
++    #  include_directories : configinc,
++    #  dependencies : [libglib_dep])
++    #executable('gspawn-win32-helper-console', 'gspawn-win32-helper.c',
++    #  install : true,
++    #  c_args : ['-DHELPER_CONSOLE'],
++    #  include_directories : configinc,
++    #  dependencies : [libglib_dep])
+   else
+     executable('gspawn-win64-helper', 'gspawn-win32-helper.c',
+       install : true,
