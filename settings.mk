@@ -12,7 +12,7 @@ JOBS := 8
 #MXE_TMP := /tmp
 
 # This variable controls the targets that will build.
-MXE_TARGETS := x86_64-w64-mingw32.static
+MXE_TARGETS := x86_64-w64-mingw32.static i686-w64-mingw32.static x86_64-w64-mingw32.shared
 
 # This variable controls which plugins are in use.
 # See plugins/README.md for further information.
@@ -28,4 +28,4 @@ MXE_TARGETS := x86_64-w64-mingw32.static
 #.DEFAULT_GOAL  := local-pkg-list
 #local-pkg-list: $(LOCAL_PKG_LIST)
 
-MXE_USE_CCACHE :=
+#MXE_USE_CCACHE :=

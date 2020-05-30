@@ -21,8 +21,9 @@ SOURCEFORGE_MIRROR := downloads.sourceforge.net
 MXE_MIRROR         := https://mirror.mxe.cc/pkg
 PKG_MIRROR         := https://mxe-pkg.s3.amazonaws.com
 PKG_CDN            := http://d1yihgixbnrglp.cloudfront.net
+PKG_JKVINGE        := https://files.jkvinge.net/packages/strawberry-dependencies
 # reorder as required, ensuring final one is a http fallback
-MIRROR_SITES       := MXE_MIRROR PKG_MIRROR PKG_CDN
+MIRROR_SITES       := PKG_JKVINGE MXE_MIRROR PKG_MIRROR PKG_CDN
 
 PWD        := $(shell pwd)
 SHELL      := bash
@@ -46,7 +47,7 @@ SED        := $(shell gsed --help >/dev/null 2>&1 && echo g)sed
 SORT       := $(shell gsort --help >/dev/null 2>&1 && echo g)sort
 DEFAULT_UA := $(shell wget --version | $(SED) -n 's,GNU \(Wget\) \([0-9.]*\).*,\1/\2,p')
 WGET_TOOL   = wget
-WGET        = $(WGET_TOOL) --user-agent='$(or $($(1)_UA),$(DEFAULT_UA))' -t 2 --timeout=6
+WGET        = $(WGET_TOOL) --user-agent='$(or $($(1)_UA),$(DEFAULT_UA))' -t 2 --timeout=10
 
 REQUIREMENTS := autoconf automake autopoint bash bison bzip2 flex \
                 $(BUILD_CC) $(BUILD_CXX) gperf intltoolize $(LIBTOOL) \
