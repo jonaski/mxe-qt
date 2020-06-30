@@ -4,8 +4,8 @@ PKG             := gcc
 $(PKG)_WEBSITE  := https://gcc.gnu.org/
 $(PKG)_DESCR    := GCC
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 9.3.0
-$(PKG)_CHECKSUM := 71e197867611f6054aa1119b13a0c0abac12834765fe2d81f35ac57f84f742d1
+$(PKG)_VERSION  := 10.1.0
+$(PKG)_CHECKSUM := b6898a23844b656f1b68691c5c012036c2e694ac4b53a8918d4712ad876e7ea2
 $(PKG)_SUBDIR   := gcc-$($(PKG)_VERSION)
 $(PKG)_FILE     := gcc-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://ftp.gnu.org/gnu/gcc/gcc-$($(PKG)_VERSION)/$($(PKG)_FILE)
@@ -14,7 +14,6 @@ $(PKG)_DEPS     := binutils mingw-w64 $(addprefix $(BUILD)~,gmp isl mpc mpfr)
 
 define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://ftp.gnu.org/gnu/gcc/?C=M;O=D' | \
-    grep 'gcc-9' | \
     $(SED) -n 's,.*<a href="gcc-\([0-9][^"]*\)/".*,\1,p' | \
     $(SORT) -V | \
     tail -1
@@ -41,6 +40,7 @@ define $(PKG)_CONFIGURE
         --disable-win32-registry \
         --enable-threads=$(MXE_GCC_THREADS) \
         $(MXE_GCC_EXCEPTION_OPTS) \
+        --enable-default-ssp \
         --enable-libgomp \
         --with-gmp='$(PREFIX)/$(BUILD)' \
         --with-isl='$(PREFIX)/$(BUILD)' \
@@ -50,7 +50,7 @@ define $(PKG)_CONFIGURE
         --with-ld='$(PREFIX)/bin/$(TARGET)-ld' \
         --with-nm='$(PREFIX)/bin/$(TARGET)-nm' \
         $(shell [ `uname -s` == Darwin ] && echo "LDFLAGS='-Wl,-no_pie'") \
-        $($(PKG)_CONFIGURE_OPTS)
+        $(PKG_CONFIGURE_OPTS)
 endef
 
 define $(PKG)_BUILD_mingw-w64
@@ -63,6 +63,7 @@ define $(PKG)_BUILD_mingw-w64
         --enable-sdk=all \
         --enable-idl \
         --enable-secure-api \
+        --with-default-msvcrt=msvcrt \
         $(mingw-w64-headers_CONFIGURE_OPTS)
     $(MAKE) -C '$(BUILD_DIR).headers' install
 
@@ -77,7 +78,8 @@ define $(PKG)_BUILD_mingw-w64
         --host='$(TARGET)' \
         --prefix='$(PREFIX)/$(TARGET)' \
         --with-default-msvcrt=msvcrt \
-        @gcc-crt-config-opts@
+        @gcc-crt-config-opts@ \
+        $(mingw-w64-crt_CONFIGURE_OPTS)
     $(MAKE) -C '$(BUILD_DIR).crt' -j '$(JOBS)' || $(MAKE) -C '$(BUILD_DIR).crt' -j '$(JOBS)'
     $(MAKE) -C '$(BUILD_DIR).crt' -j 1 $(INSTALL_STRIP_TOOLCHAIN)
 
@@ -122,9 +124,15 @@ define $(PKG)_POST_BUILD
     $(MAKE) -C '$(BUILD_DIR)/libcc1' -j 1 install cc1libdir='$(PREFIX)/lib/gcc/$(TARGET)/$($(PKG)_VERSION)'
     -rm -f '$(PREFIX)/lib/'libcc1*
 
+    # overwrite default specs to mimic stack protector handling of glibc
+    # ./configure above doesn't do this
+    '$(TARGET)-gcc' -dumpspecs > '$(PREFIX)/lib/gcc/$(TARGET)/$($(PKG)_VERSION)/specs'
+    $(SED) -i 's,-lmingwex,-lmingwex -lssp_nonshared -lssp,' '$(PREFIX)/lib/gcc/$(TARGET)/$($(PKG)_VERSION)/specs'
+
     # compile test
     cd '$(PREFIX)/$(TARGET)/bin' && '$(TARGET)-gcc' \
         -W -Wall -Werror -ansi -pedantic \
+        -D_FORTIFY_SOURCE=2 \
         --coverage -fprofile-dir=. -v \
         '$(TEST_FILE)' -o '$(PREFIX)/$(TARGET)/bin/test-$(PKG).exe'
 endef
