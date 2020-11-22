@@ -4,8 +4,8 @@ PKG             := quazip
 $(PKG)_WEBSITE  := https://github.com/stachenov/quazip
 $(PKG)_DESCR    := quazip
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := dcfeed2
-$(PKG)_CHECKSUM := f1efb5374ab3ce76c65769d49230d4ec3a843da4b68a83c86b55aef7e101d7c9
+$(PKG)_VERSION  := 67090b3
+$(PKG)_CHECKSUM := a6b13ed3218ff19b854a7e6dc31012c860cc84ad6ebac3b4f43af885f453ad17
 $(PKG)_GH_CONF  := stachenov/quazip/branches/master
 $(PKG)_DEPS     := cc qtbase zlib
 
