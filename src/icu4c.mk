@@ -8,7 +8,7 @@ $(PKG)_VERSION  := 66.1
 $(PKG)_MAJOR    := $(word 1,$(subst ., ,$($(PKG)_VERSION)))
 $(PKG)_CHECKSUM := 52a3f2209ab95559c1cf0a14f24338001f389615bf00e2585ef3dbc43ecf0a2e
 $(PKG)_GH_CONF  := unicode-org/icu/releases/latest,release-,,,-
-$(PKG)_SUBDIR   := icu
+$(PKG)_SUBDIR   := icu/source
 $(PKG)_URL      := $($(PKG)_WEBSITE)/releases/download/release-$(subst .,-,$($(PKG)_VERSION))/icu4c-$(subst .,_,$($(PKG)_VERSION))-src.tgz
 $(PKG)_DEPS     := cc $(BUILD)~$(PKG) pe-util
 
@@ -22,37 +22,22 @@ endef
 
 define $(PKG)_BUILD_$(BUILD)
 
-    # Ugly hack to get rid of python3 created by python3-conf
-    if [ -f usr/*/bin/python3 ]; then \
-      rename python3 python3.bak usr/*/bin/python3; \
-    fi
-
     # cross build requires artefacts from native build tree
     rm -rf '$(PREFIX)/$(BUILD)/$(PKG)'
     $(INSTALL) -d '$(PREFIX)/$(BUILD)/$(PKG)'
-    cd '$(PREFIX)/$(BUILD)/$(PKG)' && '$(SOURCE_DIR)/source/configure' \
+    cd '$(PREFIX)/$(BUILD)/$(PKG)' && '$(SOURCE_DIR)/configure' \
         CC=$(BUILD_CC) \
         CXX=$(BUILD_CXX) \
         --enable-tests=no \
         --enable-samples=no
     $(MAKE) -C '$(PREFIX)/$(BUILD)/$(PKG)' -j '$(JOBS)'
 
-    # Ugly hack to get back python3 created by python3-conf
-    if [ -f usr/*/bin/python3.bak ]; then \
-      rename python3.bak python3 usr/*/bin/python3.bak; \
-    fi
-
 endef
 
 define $(PKG)_BUILD_COMMON
 
-    # Ugly hack to get rid of python3 created by python3-conf
-    if [ -f usr/*/bin/python3 ]; then \
-      rename python3 python3.bak usr/*/bin/python3; \
-    fi
-
     rm -fv $(shell echo "$(PREFIX)/$(TARGET)"/{bin,lib}/{lib,libs,}icu'*'.{a,dll,dll.a})
-    cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/source/configure' \
+    cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/configure' \
         $(MXE_CONFIGURE_OPTS) \
         --with-cross-build='$(PREFIX)/$(BUILD)/$(PKG)' \
         --enable-icu-config=no \
@@ -63,11 +48,6 @@ define $(PKG)_BUILD_COMMON
 
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)' VERBOSE=1 SO_TARGET_VERSION_SUFFIX=
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install VERBOSE=1 SO_TARGET_VERSION_SUFFIX=
-
-    # Ugly hack to get back python3 created by python3-conf
-    if [ -f usr/*/bin/python3.bak ]; then \
-      rename python3.bak python3 usr/*/bin/python3.bak; \
-    fi
 
 endef
 
