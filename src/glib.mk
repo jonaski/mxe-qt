@@ -4,13 +4,13 @@ PKG             := glib
 $(PKG)_WEBSITE  := https://gtk.org/
 $(PKG)_DESCR    := GLib
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 2.67.1
-$(PKG)_CHECKSUM := 8698f6d2f413d0f53819cbf2e54b3660c747482842a3a24ffbf9fc1a87f81223
+$(PKG)_VERSION  := 2.67.2
+$(PKG)_CHECKSUM := 75ddba3a1397f935f36428ea648b7d14a629e49a7c6ad370566ba2d53d974543
 $(PKG)_SUBDIR   := glib-$($(PKG)_VERSION)
 $(PKG)_FILE     := glib-$($(PKG)_VERSION).tar.bz2
 #$(PKG)_URL      := https://download.gnome.org/sources/glib/$(call SHORT_PKG_VERSION,$(PKG))/$($(PKG)_FILE)
 $(PKG)_URL      := https://gitlab.gnome.org/GNOME/glib/-/archive/$($(PKG)_VERSION)/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc meson-conf dbus gettext libffi libiconv pcre zlib $(BUILD)~$(PKG)
+$(PKG)_DEPS     := cc meson-conf dbus gettext libffi libiconv pcre zlib $(BUILD)~$(PKG) $(BUILD)~meson
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 
 $(PKG)_DEPS_$(BUILD) := meson ninja gettext libffi libiconv zlib
@@ -23,10 +23,10 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD_$(BUILD)
-    cd '$(SOURCE_DIR)' && $(PREFIX)/$(BUILD)/bin/meson --prefix='$(PREFIX)/$(TARGET)' \
-                                --buildtype=release \
-                                --pkg-config-path='$(PREFIX)/$(TARGET)/bin/pkgconf' \
-                                '$(BUILD_DIR)'
+    cd '$(SOURCE_DIR)' &&  $(PREFIX)/$(BUILD)/bin/meson --prefix='$(PREFIX)/$(TARGET)' \
+                                                        --buildtype=release \
+                                                        --pkg-config-path='$(PREFIX)/$(TARGET)/bin/pkgconf' \
+                                                        '$(BUILD_DIR)'
     cd '$(BUILD_DIR)' && ninja
     cd '$(BUILD_DIR)' && ninja install
 endef
