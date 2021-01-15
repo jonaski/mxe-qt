@@ -1,0 +1,35 @@
+This file is part of MXE. See LICENSE.md for licensing information.
+
+Contains ad hoc patches for cross building.
+
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Jonas Kvinge <jonas@jkvinge.net>
+Date: Fri, 15 Jan 2021 16:28:41 +0100
+Subject: [PATCH 1/1] Hack openssl detection
+
+
+diff --git a/src/network/configure.cmake b/src/network/configure.cmake
+index 1111111..2222222 100644
+--- a/src/network/configure.cmake
++++ b/src/network/configure.cmake
+@@ -40,20 +40,8 @@ qt_config_compile_test(openssl
+         WrapOpenSSL::WrapOpenSSL
+     CODE
+ "
+-#include <openssl/ssl.h>
+-#include <openssl/opensslv.h>
+-#if !defined(OPENSSL_VERSION_NUMBER) || OPENSSL_VERSION_NUMBER-0 < 0x10101000L
+-#  error OpenSSL >= 1.1.1 is required
+-#endif
+-#if !defined(OPENSSL_NO_EC) && !defined(SSL_CTRL_SET_CURVES)
+-#  error OpenSSL was reported as >= 1.1.1 but is missing required features, possibly it is libressl which is unsupported
+-#endif
+ int main(int argc, char **argv)
+ {
+-    (void)argc; (void)argv;
+-    /* BEGIN TEST: */
+-SSL_free(SSL_new(0));
+-    /* END TEST: */
+     return 0;
+ }
+ ")

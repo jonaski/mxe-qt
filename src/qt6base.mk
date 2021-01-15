@@ -47,6 +47,7 @@ define $(PKG)_BUILD
         -DFEATURE_accessibility=ON \
         -DFEATURE_fontconfig=OFF \
         -DFEATURE_openssl=ON \
+        -DFEATURE_openssl_linked=ON \
         -DFEATURE_opengl=ON \
         -DFEATURE_opengl_dynamic=ON \
         -DFEATURE_use_gold_linker_alias=OFF \
@@ -56,7 +57,8 @@ define $(PKG)_BUILD
         -DFEATURE_dbus=OFF \
         -DFEATURE_sql=ON \
         -DFEATURE_sql_sqlite=ON \
-        -DFEATURE_sql_odbc=OFF \
+        -DFEATURE_sql_odbc=ON \
+        -DFEATURE_sql_mysql=OFF \
         -DFEATURE_pcre2=ON \
         -DFEATURE_libjpeg=ON \
         -DFEATURE_libpng=ON \
