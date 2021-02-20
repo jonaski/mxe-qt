@@ -11,11 +11,16 @@ $(PKG)_URL      := https://gnupg.org/ftp/gcrypt/libgcrypt/$($(PKG)_FILE)
 $(PKG)_URL_2    := https://www.mirrorservice.org/sites/ftp.gnupg.org/gcrypt/libgcrypt/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc libgpg_error
 
+#define $(PKG)_UPDATE
+#    $(WGET) -q -O- 'https://gnupg.org/ftp/gcrypt/libgcrypt/' | \
+#    $(SED) -n 's,.*libgcrypt-\([0-9][^>]*\)\.tar.*,\1,p' | \
+#    $(SORT) -V | \
+#    tail -1
+#endef
+
 define $(PKG)_UPDATE
-    $(WGET) -q -O- 'https://gnupg.org/ftp/gcrypt/libgcrypt/' | \
-    $(SED) -n 's,.*libgcrypt-\([0-9][^>]*\)\.tar.*,\1,p' | \
-    $(SORT) -V | \
-    tail -1
+    echo 'Updates for package $(PKG) is disabled.' >&2;
+    echo $($(PKG)_VERSION)
 endef
 
 define $(PKG)_CONFIGURE
