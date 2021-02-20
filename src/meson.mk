@@ -4,8 +4,8 @@ PKG              := meson
 $(PKG)_WEBSITE   := https://mesonbuild.com/
 $(PKG)_DESCR     := An open source build system meant to be extremely fast and as user friendly as possible.
 $(PKG)_IGNORE    :=
-$(PKG)_VERSION   := 0.56.0
-$(PKG)_CHECKSUM  := a9ca7adf66dc69fbb7e583f7c7aef16b9fe56ec2874a3d58747e69a3affdf300
+$(PKG)_VERSION   := 0.56.2
+$(PKG)_CHECKSUM  := aaae961c3413033789248ffe6762589e80b6cf487c334d0b808e31a32c48f35f
 $(PKG)_GH_CONF   := mesonbuild/meson/releases
 $(PKG)_SUBDIR    := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE      := $($(PKG)_SUBDIR).tar.gz
@@ -13,6 +13,11 @@ $(PKG)_URL       := https://github.com/mesonbuild/meson/archive/$($(PKG)_VERSION
 $(PKG)_FILE_DEPS := $(wildcard $(PWD)/src/meson/conf/*)
 $(PKG)_DEPS      := cmake-conf python-conf
 $(PKG)_TARGETS  := $(BUILD)
+
+define $(PKG)_UPDATE
+    echo 'Updates for package $(PKG) is disabled.' >&2;
+    echo $($(PKG)_VERSION)
+endef
 
 define $(PKG)_BUILD_$(BUILD)
     $(PYTHON_SETUP_INSTALL)
