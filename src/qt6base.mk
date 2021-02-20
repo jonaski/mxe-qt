@@ -23,7 +23,6 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
-    OPENSSL_LIBS="`'$(TARGET)-pkg-config' --libs-only-l openssl`" \
     PKG_CONFIG="${TARGET}-pkg-config" \
     PKG_CONFIG_SYSROOT_DIR="/" \
     PKG_CONFIG_LIBDIR="$(PREFIX)/$(TARGET)/lib/pkgconfig" \
@@ -48,8 +47,6 @@ define $(PKG)_BUILD
         -DFEATURE_pkg_config=ON \
         -DFEATURE_accessibility=ON \
         -DFEATURE_fontconfig=OFF \
-        -DFEATURE_openssl=ON \
-        -DFEATURE_openssl_linked=ON \
         -DFEATURE_opengl=ON \
         -DFEATURE_opengl_dynamic=ON \
         -DFEATURE_use_gold_linker_alias=OFF \
@@ -70,8 +67,7 @@ define $(PKG)_BUILD
         -DINPUT_libpng=system \
         -DINPUT_libjpeg=system \
         -DINPUT_freetype=system \
-        -DINPUT_pcre=system \
-        -DINPUT_openssl=linked
+        -DINPUT_pcre=system
 
     cmake --build '$(BUILD_DIR)' -j '$(JOBS)'
     rm -rf '$(PREFIX)/$(TARGET)/qt6'
