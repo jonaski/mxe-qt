@@ -3,12 +3,12 @@
 PKG             := mesa
 $(PKG)_WEBSITE  := https://mesa3d.org
 $(PKG)_DESCR    := The Mesa 3D Graphics Library
-$(PKG)_VERSION  := 20.3.3
-$(PKG)_CHECKSUM := f74e212d4838e982a10c203ffa998817d1855c5cf448ae87b58f96edea61d156
+$(PKG)_VERSION  := 20.3.4
+$(PKG)_CHECKSUM := dc21a987ec1ff45b278fe4b1419b1719f1968debbb80221480e44180849b4084
 $(PKG)_SUBDIR   := mesa-$($(PKG)_VERSION)
 $(PKG)_FILE     := mesa-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := ftp://ftp.freedesktop.org/pub/mesa/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc $(BUILD)~python-mako scons-local
+$(PKG)_DEPS     := cc scons-local
 
 define $(PKG)_UPDATE
     $(call GET_LATEST_VERSION, https://archive.mesa3d.org, mesa-)
