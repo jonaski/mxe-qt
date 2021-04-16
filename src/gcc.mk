@@ -15,6 +15,7 @@ $(PKG)_DEPS     := binutils mingw-w64 $(addprefix $(BUILD)~,gmp isl mpc mpfr)
 define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://ftp.gnu.org/gnu/gcc/?C=M;O=D' | \
     $(SED) -n 's,.*<a href="gcc-\([0-9][^"]*\)/".*,\1,p' | \
+    grep -v '10.3.0' | \
     $(SORT) -V | \
     tail -1
 endef
