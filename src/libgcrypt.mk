@@ -3,24 +3,19 @@
 PKG             := libgcrypt
 $(PKG)_WEBSITE  := https://directory.fsf.org/wiki/Libgcrypt
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 1.8.7
-$(PKG)_CHECKSUM := 03b70f028299561b7034b8966d7dd77ef16ed139c43440925fe8782561974748
+$(PKG)_VERSION  := 1.9.2
+$(PKG)_CHECKSUM := b2c10d091513b271e47177274607b1ffba3d95b188bbfa8797f948aec9053c5a
 $(PKG)_SUBDIR   := libgcrypt-$($(PKG)_VERSION)
 $(PKG)_FILE     := libgcrypt-$($(PKG)_VERSION).tar.bz2
 $(PKG)_URL      := https://gnupg.org/ftp/gcrypt/libgcrypt/$($(PKG)_FILE)
 $(PKG)_URL_2    := https://www.mirrorservice.org/sites/ftp.gnupg.org/gcrypt/libgcrypt/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc libgpg_error
 
-#define $(PKG)_UPDATE
-#    $(WGET) -q -O- 'https://gnupg.org/ftp/gcrypt/libgcrypt/' | \
-#    $(SED) -n 's,.*libgcrypt-\([0-9][^>]*\)\.tar.*,\1,p' | \
-#    $(SORT) -V | \
-#    tail -1
-#endef
-
 define $(PKG)_UPDATE
-    echo 'Updates for package $(PKG) is disabled.' >&2;
-    echo $($(PKG)_VERSION)
+    $(WGET) -q -O- 'https://gnupg.org/ftp/gcrypt/libgcrypt/' | \
+    $(SED) -n 's,.*libgcrypt-\([0-9][^>]*\)\.tar.*,\1,p' | \
+    $(SORT) -V | \
+    tail -1
 endef
 
 define $(PKG)_CONFIGURE
@@ -39,7 +34,9 @@ define $(PKG)_MAKE
      echo 'Version: $($(PKG)_VERSION)'; \
      echo 'Description: $(PKG)'; \
      echo 'Libs: ' "`$(TARGET)-libgcrypt-config --libs`"; \
-     echo 'Cflags: ' "`$(TARGET)-libgcrypt-config --cflags`";) \
+     echo 'Cflags: ' "`$(TARGET)-libgcrypt-config --cflags`"; \
+     echo 'Libs: -lws2_32'; \
+     ) \
      > '$(PREFIX)/$(TARGET)/lib/pkgconfig/$(PKG).pc'
 
     '$(TARGET)-gcc' \
