@@ -4,22 +4,18 @@ PKG             := isl
 $(PKG)_WEBSITE  := https://isl.gforge.inria.fr/
 $(PKG)_DESCR    := Integer Set Library
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 0.18
-$(PKG)_CHECKSUM := 6b8b0fd7f81d0a957beb3679c81bbb34ccc7568d5682844d8924424a0dadcb1b
+$(PKG)_VERSION  := 0.24
+$(PKG)_CHECKSUM := fcf78dd9656c10eb8cf9fbd5f59a0b6b01386205fe1934b3b287a0a1898145c0
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_URL      := http://isl.gforge.inria.fr/$($(PKG)_FILE)
-$(PKG)_URL_2    := https://gcc.gnu.org/pub/gcc/infrastructure/$($(PKG)_FILE)
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 $(PKG)_DEPS     := cc gmp
 
 $(PKG)_DEPS_$(BUILD) := gmp
 
-# stick to tested versions from gcc
-# while in gcc4 series specific versions are required:
-# https://web.archive.org/web/20141031011459/https://gcc.gnu.org/install/prerequisites.html
 define $(PKG)_UPDATE
-    $(WGET) -q -O- 'https://gcc.gnu.org/pub/gcc/infrastructure/' | \
+    $(WGET) -q -O- 'https://isl.gforge.inria.fr/' | \
     $(SED) -n 's,.*isl-\([0-9][^>]*\)\.tar.*,\1,p' | \
     $(SORT) -V |
     tail -1
