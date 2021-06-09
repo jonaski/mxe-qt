@@ -4,8 +4,8 @@ PKG             := qt6tools
 $(PKG)_WEBSITE  := https://www.qt.io/
 $(PKG)_DESCR    := Qt 6 Tools
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 6.1.0
-$(PKG)_CHECKSUM := 6263030c1120a30b0541d37b52dc0be0ea04bbb8d1695ec9648f0bd77e421f3e
+$(PKG)_VERSION  := 6.1.1
+$(PKG)_CHECKSUM := cba8d9a836e83b7a5e6d068239635b261f7ca4a059992b2b66cd546380091273
 $(PKG)_FILE     := qttools-everywhere-src-$($(PKG)_VERSION).tar.xz
 $(PKG)_SUBDIR   := qttools-everywhere-src-$($(PKG)_VERSION)
 $(PKG)_URL      := https://download.qt.io/official_releases/qt/6.1/$($(PKG)_VERSION)/submodules/$($(PKG)_FILE)
@@ -23,7 +23,7 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
-    $(QT6_CMAKE) -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' -DQT_BUILD_TOOLS_WHEN_CROSSCOMPILING=ON
+    $(QT6_CMAKE) -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' -DQT_BUILD_TOOLS_WHEN_CROSSCOMPILING=ON -DFEATURE_assistant=OFF
     cmake --build '$(BUILD_DIR)' -j '$(JOBS)'
     cmake --install '$(BUILD_DIR)'
 
@@ -40,4 +40,3 @@ define $(PKG)_BUILD_$(BUILD)
     cmake --build '$(BUILD_DIR)' -j '$(JOBS)'
     cmake --install '$(BUILD_DIR)'
 endef
-
