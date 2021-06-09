@@ -19,15 +19,16 @@ endef
 
 define $(PKG)_BUILD
     cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/configure' \
-        $(MXE_CONFIGURE_OPTS) \
+        --host='$(TARGET)' \
+        --build='$(BUILD)' \
+        --prefix='$(PREFIX)/$(TARGET)' \
+        $(MXE_DISABLE_DOC_OPTS) \
         --with-system-readline \
         --disable-gdbtk \
         --disable-tui \
         host_configargs="LIBS=\"`$(TARGET)-pkg-config --libs dlfcn` -lmman\"" \
-        CONFIG_SHELL=$(SHELL) \
         LDFLAGS='-Wl,--allow-multiple-definition'
-    $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)' MAKEINFO='/usr/bin/env true'
 
-    # executables are always static and we don't want the rest
+    $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)' CFLAGS='-D_WIN32_WINNT=0x0600'
     $(INSTALL) -m755 '$(BUILD_DIR)/gdb/gdb.exe'                 '$(PREFIX)/$(TARGET)/bin/'
 endef
