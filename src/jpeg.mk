@@ -22,7 +22,7 @@ define $(PKG)_BUILD
     $(MAKE) -C '$(1)' -j '$(JOBS)' install bin_PROGRAMS= sbin_PROGRAMS= noinst_PROGRAMS= man_MANS=
 
     #'$(TARGET)-gcc' \
-    3    -W -Wall -Werror -ansi -pedantic \
+    #    -W -Wall -Werror -ansi -pedantic \
     #    '$(TEST_FILE)' -o '$(PREFIX)/$(TARGET)/bin/test-jpeg.exe' \
     #    `'$(TARGET)-pkg-config' libjpeg --libs`
 endef
