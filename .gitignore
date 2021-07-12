@@ -1,0 +1,7 @@
+/pkg
+/usr
+/log
+/gits
+/dev
+/tmp-*
+.ccache
