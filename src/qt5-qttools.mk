@@ -1,15 +1,16 @@
 # This file is part of MXE. See LICENSE.md for licensing information.
 
-PKG             := qt5translations
+PKG             := qt5-qttools
 $(PKG)_WEBSITE  := https://www.qt.io/
-$(PKG)_DESCR    := Qt 5 Translations
+$(PKG)_DESCR    := Qt 5 Tools
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION   = 5.15.2
-$(PKG)_CHECKSUM := d5788e86257b21d5323f1efd94376a213e091d1e5e03b45a95dd052b5f570db8
-$(PKG)_SUBDIR   := qttranslations-everywhere-src-$($(PKG)_VERSION)
-$(PKG)_FILE     := qttranslations-everywhere-src-$($(PKG)_VERSION).tar.xz
+$(PKG)_CHECKSUM := c189d0ce1ff7c739db9a3ace52ac3e24cb8fd6dbf234e49f075249b38f43c1cc
+$(PKG)_SUBDIR   := qttools-everywhere-src-$($(PKG)_VERSION)
+$(PKG)_FILE     := qttools-everywhere-src-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://download.qt.io/official_releases/qt/5.15/$($(PKG)_VERSION)/submodules/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc qt5base qt5tools
+$(PKG)_DEPS     := cc qt5-qtbase
+$(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 
 define $(PKG)_UPDATE
     $(WGET) -q -O- https://download.qt.io/official_releases/qt/5.15/ | \
@@ -20,6 +21,15 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
+    cd '$(1)' && '$(PREFIX)/$(TARGET)/qt5/bin/qmake'
+    $(MAKE) -C '$(1)' -j '$(JOBS)'
+    $(MAKE) -C '$(1)' -j 1 install
+
+    # test QUiLoader
+    $(CMAKE_TEST)
+endef
+
+define $(PKG)_BUILD_$(BUILD)
     cd '$(1)' && '$(PREFIX)/$(TARGET)/qt5/bin/qmake'
     $(MAKE) -C '$(1)' -j '$(JOBS)'
     $(MAKE) -C '$(1)' -j 1 install
