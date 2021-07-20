@@ -1,6 +1,6 @@
 # This file is part of MXE. See LICENSE.md for licensing information.
 
-PKG             := qt5activeqt
+PKG             := qt5-activeqt
 $(PKG)_WEBSITE  := https://www.qt.io/
 $(PKG)_DESCR    := Qt 5 Active Qt
 $(PKG)_IGNORE   :=
@@ -9,7 +9,7 @@ $(PKG)_CHECKSUM := 868161fee0876d17079cd5bed58d1667bf19ffd0018cbe515129f11510ad2
 $(PKG)_SUBDIR   := qtactiveqt-everywhere-src-$($(PKG)_VERSION)
 $(PKG)_FILE     := qtactiveqt-everywhere-src-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://download.qt.io/official_releases/qt/5.15/$($(PKG)_VERSION)/submodules/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc qt5base
+$(PKG)_DEPS     := cc qt5-qtbase
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 
 define $(PKG)_UPDATE

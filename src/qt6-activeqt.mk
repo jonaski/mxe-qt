@@ -1,6 +1,6 @@
 # This file is part of MXE. See LICENSE.md for licensing information.
 
-PKG             := qt6activeqt
+PKG             := qt6-activeqt
 $(PKG)_WEBSITE  := https://www.qt.io/
 $(PKG)_DESCR    := Qt 6 Active Qt
 $(PKG)_IGNORE   :=
@@ -9,7 +9,7 @@ $(PKG)_CHECKSUM := bb1a842eefb84325b5ab87a5331484aa8caf77cdc4493dcfedc2952040229
 $(PKG)_SUBDIR   := qtactiveqt-everywhere-src-$($(PKG)_VERSION)
 $(PKG)_FILE     := qtactiveqt-everywhere-src-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://download.qt.io/official_releases/qt/6.1/$($(PKG)_VERSION)/submodules/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc qt6base
+$(PKG)_DEPS     := cc qt6-qtbase
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 
 define $(PKG)_UPDATE
