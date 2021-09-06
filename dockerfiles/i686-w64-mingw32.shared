@@ -16,6 +16,5 @@ RUN zypper -n --gpg-auto-import-keys install \
 
 RUN mkdir -p /usr/src
 RUN cd /usr/src/ && git clone https://github.com/jonaski/mxe-qt
-RUN sed -i 's/MXE_TARGETS := .*/MXE_TARGETS := x86_64-w64-mingw32.static/g' /usr/src/mxe-qt/settings.mk
+RUN sed -i 's/MXE_TARGETS := .*/MXE_TARGETS := i686-w64-mingw32.shared/g' /usr/src/mxe-qt/settings.mk
 RUN cd /usr/src/mxe-qt && make -j4
-

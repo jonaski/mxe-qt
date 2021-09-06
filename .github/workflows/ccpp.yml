@@ -2,14 +2,135 @@ name: C/C++ CI
 on: [push, pull_request]
 
 jobs:
-  build-linux:
+  build-i686-w64-mingw32-static:
+    name: Build MXE i686-w64-mingw32.static
+    runs-on: ubuntu-latest
+    container: opensuse/tumbleweed
+    steps:
+      - uses: actions/checkout@v1.2.0
+      - name: Update packages
+        run: zypper -n --gpg-auto-import-keys ref
+      - name: Upgrade packages
+        run: zypper -n --gpg-auto-import-keys dup
+      - name: Install openSUSE dependencies
+        run: zypper -n --gpg-auto-import-keys install glibc glibc-extra glibc-locale glibc-i18ndata glibc-32bit gcc-c++ shadow git make cmake libtool pkg-config autoconf automake makeinfo meson ninja intltool which patch wget curl gperf tar gzip bzip2 xz p7zip p7zip-full lzip zip unzip gettext-tools gtk-doc ruby scons bison flex diffutils orc linux-glibc-devel glibc-devel file-devel libopenssl-devel libffi-devel gdk-pixbuf-devel python-base python3-base python3-setuptools python3-Mako
+      - name: Update settings.mk
+        shell: bash
+        run: sed -i 's/MXE_TARGETS := .*/MXE_TARGETS := i686-w64-mingw32.static/g' settings.mk
+      - name: Compile
+        shell: bash
+        run: make -j4
+
+  build-x86_64-w64-mingw32-static:
+    name: Build MXE x86_64-w64-mingw32.static
+    runs-on: ubuntu-latest
+    container: opensuse/tumbleweed
+    steps:
+      - uses: actions/checkout@v1.2.0
+      - name: Update packages
+        run: zypper -n --gpg-auto-import-keys ref
+      - name: Upgrade packages
+        run: zypper -n --gpg-auto-import-keys dup
+      - name: Install openSUSE dependencies
+        run: zypper -n --gpg-auto-import-keys install glibc glibc-extra glibc-locale glibc-i18ndata glibc-32bit gcc-c++ shadow git make cmake libtool pkg-config autoconf automake makeinfo meson ninja intltool which patch wget curl gperf tar gzip bzip2 xz p7zip p7zip-full lzip zip unzip gettext-tools gtk-doc ruby scons bison flex diffutils orc linux-glibc-devel glibc-devel file-devel libopenssl-devel libffi-devel gdk-pixbuf-devel python-base python3-base python3-setuptools python3-Mako
+      - name: Update settings.mk
+        shell: bash
+        run: sed -i 's/MXE_TARGETS := .*/MXE_TARGETS := x86_64-w64-mingw32.static/g' settings.mk
+      - name: Compile
+        shell: bash
+        run: make -j4
+
+  build-i686-w64-mingw32-shared:
+    name: Build MXE i686-w64-mingw32.shared
+    runs-on: ubuntu-latest
+    container: opensuse/tumbleweed
+    steps:
+      - uses: actions/checkout@v1.2.0
+      - name: Update packages
+        run: zypper -n --gpg-auto-import-keys ref
+      - name: Upgrade packages
+        run: zypper -n --gpg-auto-import-keys dup
+      - name: Install openSUSE dependencies
+        run: zypper -n --gpg-auto-import-keys install glibc glibc-extra glibc-locale glibc-i18ndata glibc-32bit gcc-c++ shadow git make cmake libtool pkg-config autoconf automake makeinfo meson ninja intltool which patch wget curl gperf tar gzip bzip2 xz p7zip p7zip-full lzip zip unzip gettext-tools gtk-doc ruby scons bison flex diffutils orc linux-glibc-devel glibc-devel file-devel libopenssl-devel libffi-devel gdk-pixbuf-devel python-base python3-base python3-setuptools python3-Mako
+      - name: Update settings.mk
+        shell: bash
+        run: sed -i 's/MXE_TARGETS := .*/MXE_TARGETS := i686-w64-mingw32.shared/g' settings.mk
+      - name: Compile
+        shell: bash
+        run: make -j4
+        
+  build-x86_64-w64-mingw32-shared:
+    name: Build MXE x86_64-w64-mingw32.shared
+    runs-on: ubuntu-latest
+    container: opensuse/tumbleweed
+    steps:
+      - uses: actions/checkout@v1.2.0
+      - name: Update packages
+        run: zypper -n --gpg-auto-import-keys ref
+      - name: Upgrade packages
+        run: zypper -n --gpg-auto-import-keys dup
+      - name: Install openSUSE dependencies
+        run: zypper -n --gpg-auto-import-keys install glibc glibc-extra glibc-locale glibc-i18ndata glibc-32bit gcc-c++ shadow git make cmake libtool pkg-config autoconf automake makeinfo meson ninja intltool which patch wget curl gperf tar gzip bzip2 xz p7zip p7zip-full lzip zip unzip gettext-tools gtk-doc ruby scons bison flex diffutils orc linux-glibc-devel glibc-devel file-devel libopenssl-devel libffi-devel gdk-pixbuf-devel python-base python3-base python3-setuptools python3-Mako
+      - name: Update settings.mk
+        shell: bash
+        run: sed -i 's/MXE_TARGETS := .*/MXE_TARGETS := x86_64-w64-mingw32.shared/g' settings.mk
+      - name: Compile
+        shell: bash
+        run: make -j4
+
+
+  build-docker-i686-w64-mingw32-static:
+    name: Build Docker i686-w64-mingw32.static
+    if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1.2.0
-    - uses: docker/build-push-action@v1
-      with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_PASSWORD }}
-        repository: jonaski/mxe-qt
-        tags: latest
+      - uses: actions/checkout@v1.2.0
+      - uses: docker/build-push-action@v1
+        with:
+          dockerfile: ./dockerfiles/i686-w64-mingw32.static
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          repository: jonaski/mxe-qt-i686-w64-mingw32.static
+          tags: latest
 
+  build-docker-i686-w64-mingw32-shared:
+    name: Build Docker i686-w64-mingw32.shared
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1.2.0
+      - uses: docker/build-push-action@v1
+        with:
+          dockerfile: ./dockerfiles/i686-w64-mingw32.shared
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          repository: jonaski/mxe-qt-i686-w64-mingw32.shared
+          tags: latest
+
+  build-docker-x86_64-w64-mingw32-static:
+    name: Build Docker x86_64-w64-mingw32.static
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1.2.0
+      - uses: docker/build-push-action@v1
+        with:
+          dockerfile: ./dockerfiles/x86_64-w64-mingw32.static
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          repository: jonaski/mxe-qt-x86_64-w64-mingw32.static
+          tags: latest
+
+  build-docker-x86_64-w64-mingw32-shared:
+    name: Build Docker x86_64-w64-mingw32.shared
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1.2.0
+      - uses: docker/build-push-action@v1
+        with:
+          dockerfile: ./dockerfiles/x86_64-w64-mingw32.shared
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          repository: jonaski/mxe-qt-x86_64-w64-mingw32.shared
+          tags: latest
