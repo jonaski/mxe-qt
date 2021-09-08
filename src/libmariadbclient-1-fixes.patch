@@ -1,0 +1,91 @@
+This file is part of MXE. See LICENSE.md for licensing information.
+
+Contains ad hoc patches for cross building.
+
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Jonas Kvinge <jonas@jkvinge.net>
+Date: Wed, 8 Sep 2021 20:34:10 +0200
+Subject: [PATCH 1/1] Build fixes
+
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 1111111..2222222 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -392,7 +392,7 @@ ENDIF()
+ INCLUDE(${CC_SOURCE_DIR}/plugins/CMakeLists.txt)
+ ADD_SUBDIRECTORY(include)
+ ADD_SUBDIRECTORY(libmariadb)
+-IF(NOT WIN32)
++IF(NOT MSVC)
+   ADD_SUBDIRECTORY(mariadb_config)
+ ENDIF()
+ 
+diff --git a/include/mysql.h b/include/mysql.h
+index 1111111..2222222 100644
+--- a/include/mysql.h
++++ b/include/mysql.h
+@@ -468,7 +468,7 @@ struct st_mysql_client_plugin
+   MYSQL_CLIENT_PLUGIN_HEADER
+ };
+ 
+-struct st_mysql_client_plugin *
++struct st_mysql_client_plugin * STDCALL
+ mysql_load_plugin(struct st_mysql *mysql, const char *name, int type,
+                   int argc, ...);
+ struct st_mysql_client_plugin * STDCALL
+diff --git a/include/mysql/client_plugin.h b/include/mysql/client_plugin.h
+index 1111111..2222222 100644
+--- a/include/mysql/client_plugin.h
++++ b/include/mysql/client_plugin.h
+@@ -180,7 +180,7 @@ typedef struct st_mysql_client_plugin_REMOTEIO
+   @retval
+   a pointer to the loaded plugin, or NULL in case of a failure
+ */
+-struct st_mysql_client_plugin *
++struct st_mysql_client_plugin * STDCALL
+ mysql_load_plugin(struct st_mysql *mysql, const char *name, int type,
+                   int argc, ...);
+ 
+diff --git a/libmariadb/CMakeLists.txt b/libmariadb/CMakeLists.txt
+index 1111111..2222222 100644
+--- a/libmariadb/CMakeLists.txt
++++ b/libmariadb/CMakeLists.txt
+@@ -450,6 +450,13 @@ SET_TARGET_PROPERTIES(libmariadb PROPERTIES VERSION
+  ${CPACK_PACKAGE_VERSION_MAJOR}
+  SOVERSION ${CPACK_PACKAGE_VERSION_MAJOR})
+ 
++IF(MINGW)
++  SET_TARGET_PROPERTIES(libmariadb PROPERTIES
++                        OUTPUT_NAME mariadb
++                        RUNTIME_OUTPUT_NAME libmariadb
++                        ARCHIVE_OUTPUT_NAME mariadb)
++ENDIF()
++
+ IF(NOT WIN32)
+   SET_TARGET_PROPERTIES(mariadbclient PROPERTIES OUTPUT_NAME "${LIBMARIADB_STATIC_NAME}")
+ ENDIF()
+@@ -459,7 +466,9 @@ INSTALL(TARGETS mariadbclient
+           DESTINATION ${INSTALL_LIBDIR})
+ INSTALL(TARGETS libmariadb
+           COMPONENT SharedLibraries
+-        DESTINATION ${INSTALL_LIBDIR})
++        RUNTIME DESTINATION ${INSTALL_BINDIR}
++        LIBRARY DESTINATION ${INSTALL_LIBDIR}
++        ARCHIVE DESTINATION ${INSTALL_LIBDIR})
+ 
+ 
+ IF(MSVC)
+diff --git a/libmariadb/secure/schannel_certs.c b/libmariadb/secure/schannel_certs.c
+index 1111111..2222222 100644
+--- a/libmariadb/secure/schannel_certs.c
++++ b/libmariadb/secure/schannel_certs.c
+@@ -66,7 +66,7 @@ static DWORD get_last_error()
+ #define FAIL(...) \
+    do{\
+      status = get_last_error();\
+-     ma_format_win32_error(errmsg, errmsg_len, status, __VA_ARGS__);\
++     ma_format_win32_error(errmsg, errmsg_len, status, ##__VA_ARGS__);\
+      goto cleanup;\
+   } while (0)
+ 
