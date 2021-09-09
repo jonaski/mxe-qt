@@ -10,7 +10,7 @@ $(PKG)_FILE     := qtbase-everywhere-src-$($(PKG)_VERSION).tar.xz
 $(PKG)_SUBDIR   := qtbase-everywhere-src-$($(PKG)_VERSION)
 $(PKG)_URL      := https://download.qt.io/official_releases/qt/6.1/$($(PKG)_VERSION)/submodules/$($(PKG)_FILE)
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
-$(PKG)_DEPS     := cc openssl pcre2 fontconfig freetype harfbuzz glib jpeg libpng zlib zstd sqlite mesa $(BUILD)~$(PKG) $(BUILD)~qt6-qttools
+$(PKG)_DEPS     := cc openssl pcre2 fontconfig freetype harfbuzz glib jpeg libpng zlib zstd sqlite mesa libmariadbclient postgresql $(BUILD)~$(PKG) $(BUILD)~qt6-qttools
 $(PKG)_DEPS_$(BUILD) :=
 $(PKG)_OO_DEPS_$(BUILD) += qt6-conf ninja
 
@@ -61,7 +61,8 @@ define $(PKG)_BUILD
         -DFEATURE_sql=ON \
         -DFEATURE_sql_sqlite=ON \
         -DFEATURE_sql_odbc=ON \
-        -DFEATURE_sql_mysql=OFF \
+        -DFEATURE_sql_mysql=ON \
+        -DFEATURE_sql_pqsql=ON \
         -DFEATURE_pcre2=ON \
         -DFEATURE_libjpeg=ON \
         -DFEATURE_libpng=ON \
