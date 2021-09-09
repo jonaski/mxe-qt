@@ -3,7 +3,7 @@ mariadb_cancel
 mariadb_connection
 mariadb_convert_string
 ma_pvio_register_callback
-mariadb_get_charset_by_name
+mariadb_get_charset_by_name@4
 mariadb_stmt_execute_direct
 mariadb_get_charset_by_nr
 mariadb_get_info
