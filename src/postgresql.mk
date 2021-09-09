@@ -4,26 +4,19 @@ PKG             := postgresql
 $(PKG)_WEBSITE  := https://www.postgresql.org/
 $(PKG)_DESCR    := PostgreSQL
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 9.2.4
-$(PKG)_CHECKSUM := d97dd918a88a4449225998f46aafa85216a3f89163a3411830d6890507ffae93
+$(PKG)_VERSION  := 13.4
+$(PKG)_CHECKSUM := ea93e10390245f1ce461a54eb5f99a48d8cabd3a08ce4d652ec2169a357bc0cd
 $(PKG)_SUBDIR   := postgresql-$($(PKG)_VERSION)
 $(PKG)_FILE     := postgresql-$($(PKG)_VERSION).tar.bz2
 $(PKG)_URL      := https://ftp.postgresql.org/pub/source/v$($(PKG)_VERSION)/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc pthreads zlib openssl
+$(PKG)_DEPS     := cc pthreads readline zlib openssl libxml2 icu4c
 
 define $(PKG)_UPDATE
-    echo 'Updates for package $(PKG) is disabled.' >&2;
-    echo $($(PKG)_VERSION)
+    $(WGET) -q -O- 'https://ftp.postgresql.org/pub/source/' | \
+    $(SED) -n 's,.*href="v\(.*[^/]*\)/".*,\1,p'
+    $(SORT) -V | \
+    tail -1
 endef
-
-#define $(PKG)_UPDATE
-#    $(WGET) -q -O- 'https://git.postgresql.org/gitweb?p=postgresql.git;a=tags' | \
-#    grep 'refs/tags/REL9[0-9_]*"' | \
-#    $(SED) 's,.*refs/tags/REL\(.*\)".*,\1,g;' | \
-#    $(SED) 's,_,.,g' | \
-#    $(SORT) -V | \
-#    tail -1
-#endef
 
 define $(PKG)_BUILD
     cd '$(1)' && autoconf
@@ -41,11 +34,11 @@ define $(PKG)_BUILD
         --without-pam \
         --without-ldap \
         --without-bonjour \
-        --with-openssl \
         --without-readline \
         --without-ossp-uuid \
         --without-libxml \
         --without-libxslt \
+        --with-openssl \
         --with-zlib \
         --with-system-tzdata=/dev/null \
         CFLAGS="-DSSL_library_init=OPENSSL_init_ssl" \
@@ -54,22 +47,22 @@ define $(PKG)_BUILD
 
     # enable_thread_safety means "build internal pthreads" on windows
     # disable it and link mingw-w64 pthreads to and avoid name conflicts
-    $(MAKE) -C '$(1)'/src/interfaces/libpq -j '$(JOBS)' \
-        install \
-        enable_thread_safety=no \
-        PTHREAD_LIBS="`'$(TARGET)-pkg-config' pthreads --libs`"
+    $(MAKE) -C '$(1)'/src/interfaces/libpq -j '$(JOBS)' install enable_thread_safety=no PTHREAD_LIBS="`'$(TARGET)-pkg-config' pthreads --libs`"
     $(MAKE) -C '$(1)'/src/port             -j '$(JOBS)'
     $(MAKE) -C '$(1)'/src/bin/psql         -j '$(JOBS)' install
-    $(INSTALL) -m644 '$(1)/src/include/pg_config.h'    '$(PREFIX)/$(TARGET)/include/'
-    $(INSTALL) -m644 '$(1)/src/include/postgres_ext.h' '$(PREFIX)/$(TARGET)/include/'
+    $(INSTALL) -m644 '$(1)/src/include/pg_config.h'     '$(PREFIX)/$(TARGET)/include/'
+    $(INSTALL) -m644 '$(1)/src/include/pg_config_ext.h' '$(PREFIX)/$(TARGET)/include/'
+    $(INSTALL) -m644 '$(1)/src/include/postgres_ext.h'  '$(PREFIX)/$(TARGET)/include/'
     $(INSTALL) -d    '$(PREFIX)/$(TARGET)/include/libpq'
-    $(INSTALL) -m644 '$(1)'/src/include/libpq/*        '$(PREFIX)/$(TARGET)/include/libpq/'
+    $(INSTALL) -m644 '$(1)'/src/include/libpq/*         '$(PREFIX)/$(TARGET)/include/libpq/'
+
     # Build a native pg_config.
     $(SED) -i 's,-DVAL_,-D_DISABLED_VAL_,g' '$(1).native'/src/bin/pg_config/Makefile
     cd '$(1).native' && ./configure \
         --prefix='$(PREFIX)/$(TARGET)' \
         --disable-shared \
         --disable-rpath \
+        --with-openssl \
         --without-tcl \
         --without-perl \
         --without-python \
@@ -78,7 +71,6 @@ define $(PKG)_BUILD
         --without-pam \
         --without-ldap \
         --without-bonjour \
-        --without-openssl \
         --without-readline \
         --without-ossp-uuid \
         --without-libxml \

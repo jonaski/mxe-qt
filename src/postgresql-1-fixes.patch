@@ -3,135 +3,176 @@ This file is part of MXE. See LICENSE.md for licensing information.
 Contains ad hoc patches for cross building.
 
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: "a@a.org" <a@a.org>
-Date: Mon, 24 Oct 2011 14:02:33 +0200
-Subject: [PATCH 1/4] use unix style names for openssl on mingw-cross-env
+From: Jonas Kvinge <jonas@jkvinge.net>
+Date: Wed, 8 Sep 2021 19:28:49 +0200
+Subject: [PATCH 1/1] Build fixes
 
-
-diff --git a/configure.in b/configure.in
-index 1111111..2222222 100644
---- a/configure.in
-+++ b/configure.in
-@@ -926,13 +926,8 @@ fi
- 
- if test "$with_openssl" = yes ; then
-   dnl Order matters!
--  if test "$PORTNAME" != "win32"; then
--     AC_CHECK_LIB(crypto, CRYPTO_new_ex_data, [], [AC_MSG_ERROR([library 'crypto' is required for OpenSSL])])
--     AC_CHECK_LIB(ssl,    SSL_library_init, [], [AC_MSG_ERROR([library 'ssl' is required for OpenSSL])])
--  else
--     AC_SEARCH_LIBS(CRYPTO_new_ex_data, eay32 crypto, [], [AC_MSG_ERROR([library 'eay32' or 'crypto' is required for OpenSSL])])
--     AC_SEARCH_LIBS(SSL_library_init, ssleay32 ssl, [], [AC_MSG_ERROR([library 'ssleay32' or 'ssl' is required for OpenSSL])])
--  fi
-+  AC_CHECK_LIB(crypto, CRYPTO_new_ex_data, [], [AC_MSG_ERROR([library 'crypto' is required for OpenSSL])])
-+  AC_CHECK_LIB(ssl,    SSL_library_init, [], [AC_MSG_ERROR([library 'ssl' is required for OpenSSL])])
- fi
- 
- if test "$with_pam" = yes ; then
-
-From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: "a@a.org" <a@a.org>
-Date: Mon, 24 Oct 2011 14:09:38 +0200
-Subject: [PATCH 2/4] do not check autoconf version
-
-
-diff --git a/configure.in b/configure.in
-index 1111111..2222222 100644
---- a/configure.in
-+++ b/configure.in
-@@ -19,10 +19,6 @@ m4_pattern_forbid(^PGAC_)dnl to catch undefined macros
- 
- AC_INIT([PostgreSQL], [9.2.4], [pgsql-bugs@postgresql.org])
- 
--m4_if(m4_defn([m4_PACKAGE_VERSION]), [2.63], [], [m4_fatal([Autoconf version 2.63 is required.
--Untested combinations of 'autoconf' and PostgreSQL versions are not
--recommended.  You can remove the check from 'configure.in' but it is then
--your responsibility whether the result works or not.])])
- AC_COPYRIGHT([Copyright (c) 1996-2012, PostgreSQL Global Development Group])
- AC_CONFIG_SRCDIR([src/backend/access/common/heaptuple.c])
- AC_CONFIG_AUX_DIR(config)
-
-From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Timothy Gu <timothygu99@gmail.com>
-Date: Tue, 1 Jul 2014 14:27:21 -0700
-Subject: [PATCH 3/4] Fix shared lib install location
-
-Signed-off-by: Timothy Gu <timothygu99@gmail.com>
 
 diff --git a/src/Makefile.shlib b/src/Makefile.shlib
 index 1111111..2222222 100644
 --- a/src/Makefile.shlib
 +++ b/src/Makefile.shlib
-@@ -293,6 +293,7 @@ endif
- ifeq ($(PORTNAME), win32)
-   ifdef SO_MAJOR_VERSION
-     shlib		= lib$(NAME)$(DLSUFFIX)
-+    stlib		= lib$(NAME)$(DLSUFFIX).a
-   endif
-   haslibarule   = yes
+@@ -85,7 +85,7 @@ else
+ # Naming convention for dynamically loadable modules
+ shlib		= $(NAME)$(DLSUFFIX)
  endif
-@@ -447,14 +448,16 @@ ifeq ($(PORTNAME), darwin)
- endif
+-stlib		= lib$(NAME).a
++stlib		= lib$(NAME).dll.a
  
- ifeq ($(enable_shared), yes)
--install-lib-shared: $(shlib) installdirs-lib
-+install-lib-shared: $(shlib)
-+ifeq (, $(filter $(PORTNAME), win32 cygwin))
-+install-lib-shared: installdirs-lib
-+endif # not win32 or cygwin
- ifdef soname
- # we don't install $(shlib) on AIX
- # (see http://archives.postgresql.org/message-id/52EF20B2E3209443BC37736D00C3C1380A6E79FE@EXADV1.host.magwien.gv.at)
- ifneq ($(PORTNAME), aix)
-+ifeq (, $(filter $(PORTNAME), win32 cygwin))
- 	$(INSTALL_SHLIB) $< '$(DESTDIR)$(libdir)/$(shlib)'
--ifneq ($(PORTNAME), cygwin)
--ifneq ($(PORTNAME), win32)
- ifneq ($(shlib), $(shlib_major))
- 	cd '$(DESTDIR)$(libdir)' && \
- 	rm -f $(shlib_major) && \
-@@ -465,8 +468,9 @@ ifneq ($(shlib), $(shlib_bare))
- 	rm -f $(shlib_bare) && \
- 	$(LN_S) $(shlib) $(shlib_bare)
- endif
--endif # not win32
--endif # not cygwin
-+else  # win32 or cygwin
-+	$(INSTALL_SHLIB) $< '$(DESTDIR)$(bindir)/$(shlib)'
-+endif # not win32 or cygwin
- endif # not aix
- else # no soname
- 	$(INSTALL_SHLIB) $< '$(DESTDIR)$(pkglibdir)/$(shlib)'
-
-From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Timothy Gu <timothygu99@gmail.com>
-Date: Tue, 1 Jul 2014 14:41:44 -0700
-Subject: [PATCH 4/4] Don't build shared lib on win32 if --disable-shared is
- set
-
-Signed-off-by: Timothy Gu <timothygu99@gmail.com>
-
-diff --git a/src/Makefile.shlib b/src/Makefile.shlib
+ ifndef soname
+ # additional flags for backend modules
+diff --git a/src/backend/Makefile b/src/backend/Makefile
 index 1111111..2222222 100644
---- a/src/Makefile.shlib
-+++ b/src/Makefile.shlib
-@@ -291,11 +291,15 @@ ifeq ($(PORTNAME), cygwin)
- endif
+--- a/src/backend/Makefile
++++ b/src/backend/Makefile
+@@ -85,11 +85,11 @@ ifeq ($(PORTNAME), win32)
+ LIBS += -lsecur32
  
+ postgres: $(OBJS) $(WIN32RES)
+-	$(CC) $(CFLAGS) $(call expand_subsys,$(OBJS)) $(WIN32RES) $(LDFLAGS) $(LDFLAGS_EX) -Wl,--stack=$(WIN32_STACK_RLIMIT) -Wl,--export-all-symbols -Wl,--out-implib=libpostgres.a $(LIBS) -o $@$(X)
++	$(CC) $(CFLAGS) $(call expand_subsys,$(OBJS)) $(WIN32RES) $(LDFLAGS) $(LDFLAGS_EX) -Wl,--stack=$(WIN32_STACK_RLIMIT) -Wl,--export-all-symbols -Wl,--out-implib=libpostgres.dll.a $(LIBS) -o $@$(X)
+ 
+ # libpostgres.a is actually built in the preceding rule, but we need this to
+ # ensure it's newer than postgres; see notes in src/backend/parser/Makefile
+-libpostgres.a: postgres
++libpostgres.dll.a: postgres
+ 	touch $@
+ 
+ endif # win32
+@@ -203,7 +203,7 @@ endif
+ endif
  ifeq ($(PORTNAME), win32)
--  ifdef SO_MAJOR_VERSION
--    shlib		= lib$(NAME)$(DLSUFFIX)
--    stlib		= lib$(NAME)$(DLSUFFIX).a
-+  ifeq ($(enable_shared), yes)
-+    ifdef SO_MAJOR_VERSION
-+      shlib		= lib$(NAME)$(DLSUFFIX)
-+      stlib		= lib$(NAME)$(DLSUFFIX).a
-+    endif
-+    haslibarule   = yes
-+  else
-+    shlib		=
-   endif
--  haslibarule   = yes
+ ifeq ($(MAKE_DLL), true)
+-	$(INSTALL_DATA) libpostgres.a '$(DESTDIR)$(libdir)/libpostgres.a'
++	$(INSTALL_DATA) libpostgres.dll.a '$(DESTDIR)$(libdir)/libpostgres.dll.a'
+ endif
+ endif
+ 	$(MAKE) -C catalog install-data
+@@ -268,7 +268,7 @@ endif
+ endif
+ ifeq ($(PORTNAME), win32)
+ ifeq ($(MAKE_DLL), true)
+-	rm -f '$(DESTDIR)$(libdir)/libpostgres.a'
++	rm -f '$(DESTDIR)$(libdir)/libpostgres.dll.a'
+ endif
+ endif
+ 	$(MAKE) -C catalog uninstall-data
+@@ -290,7 +290,7 @@ ifeq ($(PORTNAME), cygwin)
+ 	rm -f postgres.dll libpostgres.a
+ endif
+ ifeq ($(PORTNAME), win32)
+-	rm -f postgres.dll libpostgres.a $(WIN32RES)
++	rm -f postgres.dll libpostgres.dll.a $(WIN32RES)
  endif
  
+ distclean: clean
+diff --git a/src/bin/psql/command.c b/src/bin/psql/command.c
+index 1111111..2222222 100644
+--- a/src/bin/psql/command.c
++++ b/src/bin/psql/command.c
+@@ -23,7 +23,7 @@
+ #include <sys/stat.h>			/* for stat() */
+ #endif
  
+-#include "catalog/pg_class_d.h"
++#include "../../backend/catalog/pg_class_d.h"
+ #include "command.h"
+ #include "common.h"
+ #include "common/logging.h"
+diff --git a/src/bin/psql/describe.c b/src/bin/psql/describe.c
+index 1111111..2222222 100644
+--- a/src/bin/psql/describe.c
++++ b/src/bin/psql/describe.c
+@@ -15,10 +15,10 @@
+ #include <ctype.h>
+ 
+ #include "catalog/pg_am.h"
+-#include "catalog/pg_attribute_d.h"
+-#include "catalog/pg_cast_d.h"
+-#include "catalog/pg_class_d.h"
+-#include "catalog/pg_default_acl_d.h"
++#include "../../backend/catalog/pg_attribute_d.h"
++#include "../../backend/catalog/pg_cast_d.h"
++#include "../../backend/catalog/pg_class_d.h"
++#include "../../backend/catalog/pg_default_acl_d.h"
+ #include "common.h"
+ #include "common/logging.h"
+ #include "describe.h"
+diff --git a/src/common/relpath.c b/src/common/relpath.c
+index 1111111..2222222 100644
+--- a/src/common/relpath.c
++++ b/src/common/relpath.c
+@@ -18,7 +18,7 @@
+ #include "postgres_fe.h"
+ #endif
+ 
+-#include "catalog/pg_tablespace_d.h"
++#include "../backend/catalog/pg_tablespace_d.h"
+ #include "common/relpath.h"
+ #include "storage/backendid.h"
+ 
+diff --git a/src/fe_utils/print.c b/src/fe_utils/print.c
+index 1111111..2222222 100644
+--- a/src/fe_utils/print.c
++++ b/src/fe_utils/print.c
+@@ -29,7 +29,7 @@
+ #include <termios.h>
+ #endif
+ 
+-#include "catalog/pg_type_d.h"
++#include "../backend/catalog/pg_type_d.h"
+ #include "fe_utils/mbprint.h"
+ #include "fe_utils/print.h"
+ 
+diff --git a/src/include/catalog/pg_am.h b/src/include/catalog/pg_am.h
+index 1111111..2222222 100644
+--- a/src/include/catalog/pg_am.h
++++ b/src/include/catalog/pg_am.h
+@@ -19,7 +19,7 @@
+ #define PG_AM_H
+ 
+ #include "catalog/genbki.h"
+-#include "catalog/pg_am_d.h"
++#include "../backend/catalog/pg_am_d.h"
+ 
+ /* ----------------
+  *		pg_am definition.  cpp turns this into
+diff --git a/src/include/catalog/pg_attribute.h b/src/include/catalog/pg_attribute.h
+index 1111111..2222222 100644
+--- a/src/include/catalog/pg_attribute.h
++++ b/src/include/catalog/pg_attribute.h
+@@ -23,7 +23,7 @@
+ #define PG_ATTRIBUTE_H
+ 
+ #include "catalog/genbki.h"
+-#include "catalog/pg_attribute_d.h"
++#include "../../backend/catalog/pg_attribute_d.h"
+ 
+ /* ----------------
+  *		pg_attribute definition.  cpp turns this into
+diff --git a/src/include/storage/lwlock.h b/src/include/storage/lwlock.h
+index 1111111..2222222 100644
+--- a/src/include/storage/lwlock.h
++++ b/src/include/storage/lwlock.h
+@@ -100,7 +100,7 @@ extern PGDLLIMPORT NamedLWLockTranche *NamedLWLockTrancheArray;
+ extern PGDLLIMPORT int NamedLWLockTrancheRequests;
+ 
+ /* Names for fixed lwlocks */
+-#include "storage/lwlocknames.h"
++#include "../../backend/storage/lmgr/lwlocknames.h"
+ 
+ /*
+  * It's a bit odd to declare NUM_BUFFER_PARTITIONS and NUM_LOCK_PARTITIONS
+diff --git a/src/include/utils/elog.h b/src/include/utils/elog.h
+index 1111111..2222222 100644
+--- a/src/include/utils/elog.h
++++ b/src/include/utils/elog.h
+@@ -68,7 +68,7 @@
+ #define ERRCODE_IS_CATEGORY(ec)  (((ec) & ~((1 << 12) - 1)) == 0)
+ 
+ /* SQLSTATE codes for errors are defined in a separate file */
+-#include "utils/errcodes.h"
++#include "../../backend/utils/errcodes.h"
+ 
+ /*
+  * Provide a way to prevent "errno" from being accidentally used inside an
