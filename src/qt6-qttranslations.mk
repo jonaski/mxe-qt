@@ -20,7 +20,7 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
-    cd '$(1)' && '$(PREFIX)/$(BUILD)/qt6/bin/qmake'
-    $(MAKE) -C '$(1)' -j '$(JOBS)'
-    $(MAKE) -C '$(1)' -j 1 install
+    $(QT6_CMAKE) -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)'
+    cmake --build '$(BUILD_DIR)' -j '$(JOBS)'
+    cmake --install '$(BUILD_DIR)'
 endef
