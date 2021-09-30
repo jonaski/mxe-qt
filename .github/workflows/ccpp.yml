@@ -58,7 +58,7 @@ jobs:
       - name: Compile
         shell: bash
         run: make -j4
-        
+
   build-x86_64-w64-mingw32-shared:
     name: Build MXE x86_64-w64-mingw32.shared
     runs-on: ubuntu-latest
