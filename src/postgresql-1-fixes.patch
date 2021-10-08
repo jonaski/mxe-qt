@@ -4,7 +4,7 @@ Contains ad hoc patches for cross building.
 
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Jonas Kvinge <jonas@jkvinge.net>
-Date: Wed, 8 Sep 2021 19:28:49 +0200
+Date: Fri, 8 Oct 2021 21:20:35 +0200
 Subject: [PATCH 1/1] Build fixes
 
 
@@ -39,7 +39,7 @@ index 1111111..2222222 100644
  	touch $@
  
  endif # win32
-@@ -203,7 +203,7 @@ endif
+@@ -202,7 +202,7 @@ endif
  endif
  ifeq ($(PORTNAME), win32)
  ifeq ($(MAKE_DLL), true)
@@ -48,7 +48,7 @@ index 1111111..2222222 100644
  endif
  endif
  	$(MAKE) -C catalog install-data
-@@ -268,7 +268,7 @@ endif
+@@ -267,7 +267,7 @@ endif
  endif
  ifeq ($(PORTNAME), win32)
  ifeq ($(MAKE_DLL), true)
@@ -57,7 +57,7 @@ index 1111111..2222222 100644
  endif
  endif
  	$(MAKE) -C catalog uninstall-data
-@@ -290,7 +290,7 @@ ifeq ($(PORTNAME), cygwin)
+@@ -289,7 +289,7 @@ ifeq ($(PORTNAME), cygwin)
  	rm -f postgres.dll libpostgres.a
  endif
  ifeq ($(PORTNAME), win32)
@@ -154,7 +154,7 @@ diff --git a/src/include/storage/lwlock.h b/src/include/storage/lwlock.h
 index 1111111..2222222 100644
 --- a/src/include/storage/lwlock.h
 +++ b/src/include/storage/lwlock.h
-@@ -100,7 +100,7 @@ extern PGDLLIMPORT NamedLWLockTranche *NamedLWLockTrancheArray;
+@@ -71,7 +71,7 @@ extern PGDLLIMPORT NamedLWLockTranche *NamedLWLockTrancheArray;
  extern PGDLLIMPORT int NamedLWLockTrancheRequests;
  
  /* Names for fixed lwlocks */
@@ -167,7 +167,7 @@ diff --git a/src/include/utils/elog.h b/src/include/utils/elog.h
 index 1111111..2222222 100644
 --- a/src/include/utils/elog.h
 +++ b/src/include/utils/elog.h
-@@ -68,7 +68,7 @@
+@@ -70,7 +70,7 @@
  #define ERRCODE_IS_CATEGORY(ec)  (((ec) & ~((1 << 12) - 1)) == 0)
  
  /* SQLSTATE codes for errors are defined in a separate file */

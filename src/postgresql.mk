@@ -20,7 +20,6 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
-    cd '$(1)' && autoconf
     cp -Rp '$(1)' '$(1).native'
     # Since we build only client library, use bogus tzdata to satisfy configure.
     # pthreads is needed in both LIBS and PTHREAD_LIBS
