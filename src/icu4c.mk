@@ -66,10 +66,10 @@ define $(PKG)_BUILD_SHARED
 
     # bundle test to verify deployment
     rm -rfv '$(PREFIX)/$(TARGET)/bin/test-$(PKG)' '$(PREFIX)/$(TARGET)/bin/test-$(PKG).zip'
-    #$(INSTALL) -d '$(PREFIX)/$(TARGET)/bin/test-$(PKG)'
-    #cp $$($(TARGET)-peldd --all '$(PREFIX)/$(TARGET)/bin/test-$(PKG).exe') '$(PREFIX)/$(TARGET)/bin/test-$(PKG)'
-    #cd '$(PREFIX)/$(TARGET)/bin' && zip -r test-$(PKG).zip test-$(PKG)
-    #rm -rfv '$(PREFIX)/$(TARGET)/bin/test-$(PKG)'
+    $(INSTALL) -d '$(PREFIX)/$(TARGET)/bin/test-$(PKG)'
+    cp $$($(TARGET)-peldd --all '$(PREFIX)/$(TARGET)/bin/test-$(PKG).exe') '$(PREFIX)/$(TARGET)/bin/test-$(PKG)'
+    cd '$(PREFIX)/$(TARGET)/bin' && 7za a -tzip test-$(PKG).zip test-$(PKG)
+    rm -rfv '$(PREFIX)/$(TARGET)/bin/test-$(PKG)'
 endef
 
 define $(PKG)_BUILD
