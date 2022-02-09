@@ -27,6 +27,10 @@ RUN update-alternatives --set g++ /usr/bin/g++-11
 
 RUN ln -s /usr/bin/python3 /usr/bin/python
 
+# Patch meson
+RUN cd /tmp && wget https://patch-diff.githubusercontent.com/raw/mesonbuild/meson/pull/9841.patch
+RUN cd /usr/lib/python3.6/site-packages && patch -p1 < /tmp/9841.patch
+
 RUN mkdir -p /usr/src
 RUN cd /usr/src/ && git clone https://github.com/jonaski/mxe-qt
 RUN sed -i 's/MXE_TARGETS := .*/MXE_TARGETS := i686-w64-mingw32.shared/g' /usr/src/mxe-qt/settings.mk
