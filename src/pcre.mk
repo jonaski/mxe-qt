@@ -2,27 +2,27 @@
 
 PKG             := pcre
 $(PKG)_WEBSITE  := https://www.pcre.org/
-$(PKG)_DESCR    := PCRE
+$(PKG)_DESCR    := Perl Compatible Regular Expressions Library
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 8.45
 $(PKG)_CHECKSUM := 4dae6fdcd2bb0bb6c37b5f97c33c2be954da743985369cddac3546e3218bffb8
 $(PKG)_SUBDIR   := pcre-$($(PKG)_VERSION)
 $(PKG)_FILE     := pcre-$($(PKG)_VERSION).tar.bz2
-$(PKG)_URL      := https://ftp.pcre.org/pub/pcre/$($(PKG)_FILE)
-$(PKG)_URL_2    := https://$(SOURCEFORGE_MIRROR)/project/pcre/pcre/$($(PKG)_VERSION)/$($(PKG)_FILE)
+$(PKG)_URL      := https://$(SOURCEFORGE_MIRROR)/project/pcre/pcre/$($(PKG)_VERSION)/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc
 
 define $(PKG)_UPDATE
-    $(WGET) -q -O- 'https://ftp.pcre.org/pub/pcre/' | \
-    $(SED) -n 's,.*pcre-\([0-9]\+\)\(\.[0-9]\+\)*\.zip.*,\1\2,p' | \
-    tail -1
+    $(WGET) -q -O- 'https://sourceforge.net/projects/pcre/files/pcre/' | \
+    $(SED) -n 's,.*/projects/.*/\([0-9][^"]*\)/".*,\1,p' | \
+    head -1
 endef
 
 define $(PKG)_BUILD_SHARED
     cd '$(1)' && ./configure \
         $(MXE_CONFIGURE_OPTS) \
-        --enable-pcre16 \
         --enable-utf \
+        --enable-pcre16 \
+        --enable-pcre32 \
         --enable-unicode-properties \
         --enable-cpp \
         --disable-pcregrep-libz \
