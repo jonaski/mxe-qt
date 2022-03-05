@@ -34,4 +34,4 @@ RUN cd /usr/lib/python3.6/site-packages && patch -p1 < /tmp/9841.patch
 RUN mkdir -p /usr/src
 RUN cd /usr/src/ && git clone https://github.com/jonaski/mxe-qt
 RUN sed -i 's/MXE_TARGETS := .*/MXE_TARGETS := i686-w64-mingw32.static/g' /usr/src/mxe-qt/settings.mk
-RUN cd /usr/src/mxe-qt && make -j4
+RUN cd /usr/src/mxe-qt && make -j4 || { cat $(ls -1t log/*-* | head -n 1) && exit 1; }
