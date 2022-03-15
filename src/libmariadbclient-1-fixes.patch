@@ -4,7 +4,7 @@ Contains ad hoc patches for cross building.
 
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Jonas Kvinge <jonas@jkvinge.net>
-Date: Wed, 8 Sep 2021 20:34:10 +0200
+Date: Tue, 15 Mar 2022 16:50:37 +0100
 Subject: [PATCH 1/1] Build fixes
 
 
@@ -12,7 +12,7 @@ diff --git a/CMakeLists.txt b/CMakeLists.txt
 index 1111111..2222222 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -392,7 +392,7 @@ ENDIF()
+@@ -417,7 +417,7 @@ ENDIF()
  INCLUDE(${CC_SOURCE_DIR}/plugins/CMakeLists.txt)
  ADD_SUBDIRECTORY(include)
  ADD_SUBDIRECTORY(libmariadb)
@@ -51,7 +51,7 @@ diff --git a/libmariadb/CMakeLists.txt b/libmariadb/CMakeLists.txt
 index 1111111..2222222 100644
 --- a/libmariadb/CMakeLists.txt
 +++ b/libmariadb/CMakeLists.txt
-@@ -450,6 +450,13 @@ SET_TARGET_PROPERTIES(libmariadb PROPERTIES VERSION
+@@ -454,6 +454,13 @@ SET_TARGET_PROPERTIES(libmariadb PROPERTIES VERSION
   ${CPACK_PACKAGE_VERSION_MAJOR}
   SOVERSION ${CPACK_PACKAGE_VERSION_MAJOR})
  
@@ -65,17 +65,6 @@ index 1111111..2222222 100644
  IF(NOT WIN32)
    SET_TARGET_PROPERTIES(mariadbclient PROPERTIES OUTPUT_NAME "${LIBMARIADB_STATIC_NAME}")
  ENDIF()
-@@ -459,7 +466,9 @@ INSTALL(TARGETS mariadbclient
-           DESTINATION ${INSTALL_LIBDIR})
- INSTALL(TARGETS libmariadb
-           COMPONENT SharedLibraries
--        DESTINATION ${INSTALL_LIBDIR})
-+        RUNTIME DESTINATION ${INSTALL_BINDIR}
-+        LIBRARY DESTINATION ${INSTALL_LIBDIR}
-+        ARCHIVE DESTINATION ${INSTALL_LIBDIR})
- 
- 
- IF(MSVC)
 diff --git a/libmariadb/secure/schannel_certs.c b/libmariadb/secure/schannel_certs.c
 index 1111111..2222222 100644
 --- a/libmariadb/secure/schannel_certs.c
