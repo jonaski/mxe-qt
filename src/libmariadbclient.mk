@@ -13,7 +13,6 @@ $(PKG)_DEPS     := cc openssl zlib
 define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://archive.mariadb.org/' | \
     $(SED) -n 's,.*connector-c-\([0-9\.]\+\).*,\1,p' | \
-    grep -v '3.3.0' | \
     $(SORT) -V | \
     tail -1
 endef
