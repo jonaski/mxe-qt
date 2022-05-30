@@ -72,7 +72,6 @@ define $(PKG)_BUILD
         -DFEATURE_system_png=ON \
         -DFEATURE_system_jpeg=ON \
         -DFEATURE_system_pcre2=ON \
-        -DFEATURE_system_freetype=ON \
         -DFEATURE_system_harfbuzz=ON \
         -DFEATURE_system_sqlite=ON
 
