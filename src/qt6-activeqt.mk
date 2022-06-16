@@ -8,7 +8,7 @@ $(PKG)_VERSION  := 6.2.4
 $(PKG)_CHECKSUM := 486c1f2ccf0e545c68ebb5e139456f924b9e0948bdd16351701d624172e539f3
 $(PKG)_SUBDIR   := qtactiveqt-everywhere-src-$($(PKG)_VERSION)
 $(PKG)_FILE     := qtactiveqt-everywhere-src-$($(PKG)_VERSION).tar.xz
-$(PKG)_URL      := https://download.qt.io/official_releases/qt/6.2/$($(PKG)_VERSION)/submodules/$($(PKG)_FILE)
+$(PKG)_URL      := https://download.qt.io/official_releases/qt/6.3/$($(PKG)_VERSION)/submodules/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc qt6-qtbase
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 
