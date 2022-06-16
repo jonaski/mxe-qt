@@ -13,8 +13,8 @@ $(PKG)_DEPS     := cc qt6-qtbase
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 
 define $(PKG)_UPDATE
-    $(WGET) -q -O- https://download.qt.io/official_releases/qt/6.2/ | \
-    $(SED) -n 's,.*href="\(6\.2\.[^/]*\)/".*,\1,p' | \
+    $(WGET) -q -O- https://download.qt.io/official_releases/qt/6.3/ | \
+    $(SED) -n 's,.*href="\(6\.3\.[^/]*\)/".*,\1,p' | \
     sort |
     tail -1
 endef
