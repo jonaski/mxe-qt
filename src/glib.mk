@@ -4,8 +4,8 @@ PKG             := glib
 $(PKG)_WEBSITE  := https://docs.gtk.org/glib/
 $(PKG)_DESCR    := GLib general-purpose, portable utility library
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 2.73.1
-$(PKG)_CHECKSUM := 77b21da5bd195a8e5f751206a2acab477636e3d02fe4f3796ede5788255382ae
+$(PKG)_VERSION  := 2.73.0
+$(PKG)_CHECKSUM := 3673f10515f4bcfb9ee2ce0a921a18fa359c36fab388b19819467e7b09506870
 $(PKG)_SUBDIR   := glib-$($(PKG)_VERSION)
 $(PKG)_FILE     := glib-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://download.gnome.org/sources/glib/$(call SHORT_PKG_VERSION,$(PKG))/$($(PKG)_FILE)
@@ -18,6 +18,7 @@ $(PKG)_DEPS_$(BUILD) := ninja gettext libffi libiconv zlib
 define $(PKG)_UPDATE
     $(call MXE_GET_GH_TAGS,GNOME/glib) | \
     grep -v '\([0-9]\+\.\)\{2\}9[0-9]' | \
+    grep -v '2.73.1' | \
     $(SORT) -Vr | \
     head -1
 endef
