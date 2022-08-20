@@ -1,21 +1,8 @@
-diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 2584e93..d6adad4 100644
---- a/CMakeLists.txt
-+++ b/CMakeLists.txt
-@@ -419,7 +419,7 @@ ENDIF()
- INCLUDE(${CC_SOURCE_DIR}/plugins/CMakeLists.txt)
- ADD_SUBDIRECTORY(include)
- ADD_SUBDIRECTORY(libmariadb)
--IF(NOT WIN32)
-+IF(NOT MSVC)
-   ADD_SUBDIRECTORY(mariadb_config)
- ENDIF()
- 
 diff --git a/include/mysql.h b/include/mysql.h
-index 8a3884c..cc9cc04 100644
+index ba3063d..a19f081 100644
 --- a/include/mysql.h
 +++ b/include/mysql.h
-@@ -471,7 +471,7 @@ struct st_mysql_client_plugin
+@@ -473,7 +473,7 @@ struct st_mysql_client_plugin
    MYSQL_CLIENT_PLUGIN_HEADER
  };
  
@@ -38,10 +25,10 @@ index 262fd4a..9a0e1e6 100644
                    int argc, ...);
  
 diff --git a/libmariadb/CMakeLists.txt b/libmariadb/CMakeLists.txt
-index 7faf827..6056f38 100644
+index 070fdc9..23e742e 100644
 --- a/libmariadb/CMakeLists.txt
 +++ b/libmariadb/CMakeLists.txt
-@@ -466,6 +466,13 @@ SET_TARGET_PROPERTIES(libmariadb PROPERTIES VERSION
+@@ -487,6 +487,13 @@ SET_TARGET_PROPERTIES(libmariadb PROPERTIES VERSION
   ${CPACK_PACKAGE_VERSION_MAJOR}
   SOVERSION ${CPACK_PACKAGE_VERSION_MAJOR})
  
@@ -55,7 +42,7 @@ index 7faf827..6056f38 100644
  IF(NOT WIN32)
    SET_TARGET_PROPERTIES(mariadbclient PROPERTIES OUTPUT_NAME "${LIBMARIADB_STATIC_NAME}")
  ENDIF()
-@@ -482,9 +489,15 @@ ELSE()
+@@ -503,9 +510,15 @@ ELSE()
  #INSTALL(TARGETS libmariadb LIBRARY DESTINATION ${INSTALL_LIBDIR}
  #        COMPONENT SharedLibraries NAMELINK_COMPONENT Development)
  # but as long as we build on CentOS 7 with its cmake 2.8.12.2 we have to use
