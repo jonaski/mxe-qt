@@ -1,3 +1,18 @@
+diff --git a/include/ma_global.h b/include/ma_global.h
+index b8ef7e1..77865ca 100644
+--- a/include/ma_global.h
++++ b/include/ma_global.h
+@@ -33,9 +33,9 @@
+ #if _MSC_VER < 1900
+ #define snprintf _snprintf
+ #endif
+-#define strerror_r(errno,buf,len) strerror_s(buf,len,errno)
+ #endif
+ #define STDCALL __stdcall 
++#define strerror_r(errno,buf,len) strerror_s(buf,len,errno)
+ #endif
+ 
+ #include <ma_config.h>
 diff --git a/include/mysql.h b/include/mysql.h
 index ba3063d..a19f081 100644
 --- a/include/mysql.h
