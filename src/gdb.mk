@@ -20,8 +20,10 @@ endef
 
 define $(PKG)_BUILD
     cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/configure' \
-        $(MXE_CONFIGURE_OPTS) \
-        host_configargs="LIBS=\"`$(TARGET)-pkg-config --libs dlfcn` -lmman\"" \
+        --host='$(TARGET)' \
+        --build='$(BUILD)' \
+        --prefix='$(PREFIX)/$(TARGET)' \
+        host_configargs="LIBS=\"-lmman\"" \
         LDFLAGS='-Wl,--allow-multiple-definition'
 
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
