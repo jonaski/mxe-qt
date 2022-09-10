@@ -23,6 +23,8 @@ define $(PKG)_BUILD
         --host='$(TARGET)' \
         --build='$(BUILD)' \
         --prefix='$(PREFIX)/$(TARGET)' \
+        --enable-static \
+        --disable-shared \
         host_configargs="LIBS=\"-lmman\"" \
         LDFLAGS='-Wl,--allow-multiple-definition'
 
