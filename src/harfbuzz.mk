@@ -11,7 +11,13 @@ $(PKG)_DEPS     := cc cairo freetype-bootstrap glib icu4c
 
 define $(PKG)_BUILD
     # mman-win32 is only a partial implementation
-    cd '$(1)' && ./autogen.sh && ./configure $(MXE_CONFIGURE_OPTS) ac_cv_header_sys_mman_h=no
+    cd '$(1)' && ./autogen.sh
+    cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS) \
+        --with-glib=yes \
+        --with-icu=yes \
+        --with-freetype=yes \
+        --with-cairo=yes \
+        ac_cv_header_sys_mman_h=no
     $(MAKE) -C '$(1)'
     $(MAKE) -C '$(1)' install
 endef
