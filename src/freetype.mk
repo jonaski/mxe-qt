@@ -22,10 +22,10 @@ define $(PKG)_BUILD_COMMON
     cd '$(1)' && GNUMAKE=$(MAKE) ./configure \
         $(MXE_CONFIGURE_OPTS) \
         --enable-freetype-config \
+        --with-zlib=yes \
+        --with-bzip2=yes \
+        --with-brotli=yes \
         --with-harfbuzz=yes \
-        LIBPNG_CFLAGS="`$(TARGET)-pkg-config libpng --cflags`" \
-        LIBPNG_LDFLAGS="`$(TARGET)-pkg-config libpng --libs`" \
-        FT2_EXTRA_LIBS="`$(TARGET)-pkg-config libpng --libs`" \
         $(if $(BUILD_STATIC),HARFBUZZ_LIBS="`$(TARGET)-pkg-config harfbuzz --libs` -lharfbuzz_too -lfreetype_too `$(TARGET)-pkg-config glib-2.0 --libs`",)
     $(MAKE) -C '$(1)' -j '$(JOBS)'
     $(MAKE) -C '$(1)' -j 1 install
