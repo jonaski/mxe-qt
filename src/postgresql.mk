@@ -82,3 +82,5 @@ define $(PKG)_BUILD
     ln -sf '$(PREFIX)/$(TARGET)/bin/pg_config' '$(PREFIX)/bin/$(TARGET)-pg_config'
 endef
 
+# Static build is currently broken.
+$(PKG)_BUILD_STATIC =
