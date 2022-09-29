@@ -14,6 +14,7 @@ $(PKG)_DEPS     := cc pthreads readline zlib openssl libxml2 icu4c
 define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://ftp.postgresql.org/pub/source/' | \
     $(SED) -n 's,.*href="v\(.*[^/]*\)/".*,\1,p' | \
+    grep -v 'rc' | \
     grep -v 'beta' | \
     $(SORT) -V | \
     tail -1
