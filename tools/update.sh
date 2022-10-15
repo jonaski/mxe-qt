@@ -17,8 +17,6 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-repo="jonaski/mxe-qt"
-
 function timestamp() { date '+%Y-%m-%d %H:%M:%S'; }
 function status() { echo "[$(timestamp)] $*"; }
 function error() { echo "[$(timestamp)] ERROR: $*" >&2; }
@@ -68,7 +66,7 @@ function merge_prs() {
   fi
 
   for pr in ${prs}; do
-    if ! [ "$(gh pr view "${pr}" --json 'author' | jq -r '.author.login')" = "strawbsbot" ]; then
+    if ! [ "$(gh pr view "${pr}" --json 'author' | jq -r '.author.login')" = "${gh_username}" ]; then
       continue
     fi
     if ! [ "$(gh pr view "${pr}" --json 'isDraft' | jq '.isDraft')" = "false" ]; then
@@ -270,6 +268,12 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
+repo=$(git config --get remote.origin.url | cut -d ':' -f 2 | sed 's/\.git$//g')
+if [ "${repo}" = "" ]; then
+  error "Could not get repo name."
+  exit 1
+fi
+
 git status >/dev/null
 if [ $? -ne 0 ]; then
   error "Git status failed."
@@ -279,6 +283,12 @@ fi
 gh auth status >/dev/null
 if [ $? -ne 0 ]; then
   error "Missing GitHub login."
+  exit 1
+fi
+
+gh_username=$(sed -n 's,^[ ]*user: \(.*\)$,\1,p' ~/.config/gh/hosts.yml)
+if [ "${gh_username}" = "" ]; then
+  error "Missing GitHub username."
   exit 1
 fi
 
