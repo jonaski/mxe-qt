@@ -3,8 +3,8 @@
 PKG             := libmariadbclient
 $(PKG)_WEBSITE  := https://mariadb.org/
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 3.3.2
-$(PKG)_CHECKSUM := 7e0722e07d30bb906fac9fe10fb582cde1e148e05a83d9ca7b6fcc884b68fbce
+$(PKG)_VERSION  := 3.3.3
+$(PKG)_CHECKSUM := d77630e2376fe08185b5354621c877b0a203a6b186a0694574d37b764aeb2874
 $(PKG)_SUBDIR   := mariadb-connector-c-$($(PKG)_VERSION)-src
 $(PKG)_FILE     := $($(PKG)_SUBDIR).tar.gz
 $(PKG)_URL      := https://archive.mariadb.org/connector-c-$($(PKG)_VERSION)/$($(PKG)_FILE)
