@@ -4,8 +4,8 @@ PKG             := glib
 $(PKG)_WEBSITE  := https://docs.gtk.org/glib/
 $(PKG)_DESCR    := GLib general-purpose, portable utility library
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 2.75.1
-$(PKG)_CHECKSUM := 96fd22355a542cca96c31082f2d09b72cb5a3454b6ea60c1be17c987a18a6b93
+$(PKG)_VERSION  := 2.75.3
+$(PKG)_CHECKSUM := 7c517d0aff456c35a039bce8a8df7a08ce95a8285b09d1849f8865f633f7f871
 $(PKG)_SUBDIR   := glib-$($(PKG)_VERSION)
 $(PKG)_FILE     := glib-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://download.gnome.org/sources/glib/$(call SHORT_PKG_VERSION,$(PKG))/$($(PKG)_FILE)
@@ -39,7 +39,7 @@ define $(PKG)_BUILD
     ln -sf '$(PREFIX)/$(BUILD)/bin/glib-genmarshal'        '$(PREFIX)/$(TARGET)/bin/'
     ln -sf '$(PREFIX)/$(BUILD)/bin/glib-compile-schemas'   '$(PREFIX)/$(TARGET)/bin/'
     ln -sf '$(PREFIX)/$(BUILD)/bin/glib-compile-resources' '$(PREFIX)/$(TARGET)/bin/'
-    cd '$(SOURCE_DIR)' && '$(TARGET)-meson' --buildtype='$(MESON_BUILD_TYPE)' -Dforce_posix_threads=true -Dtests=false '$(BUILD_DIR)'
+    cd '$(SOURCE_DIR)' && CFLAGS='-liconv' '$(TARGET)-meson' --buildtype='$(MESON_BUILD_TYPE)' -Dforce_posix_threads=true -Dtests=false '$(BUILD_DIR)'
     cd '$(BUILD_DIR)' && ninja
     cd '$(BUILD_DIR)' && ninja install
 endef
