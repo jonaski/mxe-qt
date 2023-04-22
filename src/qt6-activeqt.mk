@@ -15,7 +15,16 @@ $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 $(PKG)_UPDATE = $(qt6-qtbase_UPDATE)
 
 define $(PKG)_BUILD
-    $(QT6_CMAKE) --log-level="DEBUG" -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)'
+    $(QT6_CMAKE) --log-level="DEBUG" -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' \
+        -DCMAKE_BUILD_TYPE='$(MXE_BUILD_TYPE)' \
+        -DBUILD_SHARED_LIBS=$(CMAKE_SHARED_BOOL) \
+        -DBUILD_STATIC_LIBS=$(CMAKE_STATIC_BOOL) \
+        -DQT_BUILD_BENCHMARKS=OFF \
+        -DQT_BUILD_EXAMPLES=OFF \
+        -DQT_BUILD_TESTS=OFF \
+        -DQT_BUILD_TESTS_BY_DEFAULT=OFF \
+        -DQT_BUILD_TOOLS_BY_DEFAULT=OFF \
+        -DQT_BUILD_EXAMPLES_BY_DEFAULT=OFF
     cmake --build '$(BUILD_DIR)' -j '$(JOBS)'
     cmake --install '$(BUILD_DIR)'
 endef

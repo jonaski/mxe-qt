@@ -30,9 +30,10 @@ define $(PKG)_BUILD
     '$(TARGET)-cmake' --log-level="DEBUG" -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' \
         -G Ninja \
         -DCMAKE_BUILD_TYPE='$(MXE_BUILD_TYPE)' \
-        -DCMAKE_INSTALL_PREFIX='$(PREFIX)/$(TARGET)/qt6' \
         -DBUILD_SHARED_LIBS=$(CMAKE_SHARED_BOOL) \
-        -DPKG_CONFIG_EXECUTABLE=$(PREFIX)/bin/$(TARGET)-pkg-config \
+        -DBUILD_STATIC_LIBS=$(CMAKE_STATIC_BOOL) \
+        -DCMAKE_INSTALL_PREFIX='$(PREFIX)/$(TARGET)/qt6' \
+        -DPKG_CONFIG_EXECUTABLE='$(PREFIX)/bin/$(TARGET)-pkg-config' \
         -DQT_HOST_PATH='$(PREFIX)/$(BUILD)/qt6' \
         -DQT_QMAKE_TARGET_MKSPEC=win32-g++ \
         -DQT_QMAKE_DEVICE_OPTIONS='CROSS_COMPILE=$(TARGET)-;PKG_CONFIG=$(TARGET)-pkg-config' \
