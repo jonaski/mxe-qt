@@ -23,7 +23,7 @@ define $(PKG)_BUILD
         -DBUILD_STATIC_LIBS=$(CMAKE_STATIC_BOOL) \
         -DQT_BUILD_EXAMPLES=OFF \
         -DQT_BUILD_EXAMPLES_BY_DEFAULT=OFF \
-        -DQT_BUILD_TOOLS_WHEN_CROSSCOMPILING=ON \
+        -DQT_FORCE_BUILD_TOOLS=ON \
         -DFEATURE_assistant=OFF \
         -DFEATURE_designer=OFF \
         -DFEATURE_distancefieldgenerator=OFF \
