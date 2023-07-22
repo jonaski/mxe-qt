@@ -9,12 +9,13 @@ $(PKG)_CHECKSUM := 5d0040ca776fe484fd19f09567bc5f2838faab409e38a15730855169215ff
 $(PKG)_SUBDIR   := qtactiveqt-everywhere-src-$($(PKG)_VERSION)
 $(PKG)_FILE     := qtactiveqt-everywhere-src-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://download.qt.io/official_releases/qt/$(call SHORT_PKG_VERSION,$(PKG))/$($(PKG)_VERSION)/submodules/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc qt6-qtbase
+$(PKG)_DEPS     := cc qt6-qtbase qt6-qttools
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 
 $(PKG)_UPDATE = $(qt6-qtbase_UPDATE)
 
 define $(PKG)_BUILD
+    mv '$(PREFIX)/$(TARGET)/lib/pkgconfig/harfbuzz.pc' '$(PREFIX)/$(TARGET)/lib/pkgconfig/harfbuzz.pc_'
     $(QT6_CMAKE) --log-level="DEBUG" -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' \
         -DCMAKE_BUILD_TYPE='$(MXE_BUILD_TYPE)' \
         -DBUILD_SHARED_LIBS=$(CMAKE_SHARED_BOOL) \
@@ -25,6 +26,7 @@ define $(PKG)_BUILD
         -DQT_BUILD_TESTS_BY_DEFAULT=OFF \
         -DQT_BUILD_TOOLS_BY_DEFAULT=OFF \
         -DQT_BUILD_EXAMPLES_BY_DEFAULT=OFF
+    mv '$(PREFIX)/$(TARGET)/lib/pkgconfig/harfbuzz.pc_' '$(PREFIX)/$(TARGET)/lib/pkgconfig/harfbuzz.pc'
     cmake --build '$(BUILD_DIR)' -j '$(JOBS)'
     cmake --install '$(BUILD_DIR)'
 endef
