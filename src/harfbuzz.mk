@@ -10,7 +10,7 @@ $(PKG)_GH_CONF  := harfbuzz/harfbuzz/releases
 $(PKG)_DEPS     := cc freetype-bootstrap glib icu4c cairo libiconv
 
 define $(PKG)_BUILD
-    cd '$(SOURCE_DIR)' && LDFLAGS='$(LDFLAGS) -liconv' '$(TARGET)-meson' \
+    cd '$(SOURCE_DIR)' && '$(TARGET)-meson' \
         --buildtype='$(MESON_BUILD_TYPE)' \
         -Dtests=disabled \
         -Ddocs=disabled \
@@ -20,6 +20,7 @@ define $(PKG)_BUILD
         -Dcoretext=enabled \
         -Dfreetype=enabled \
         -Dicu=enabled \
+        -Dutilities=disabled \
         '$(BUILD_DIR)'
    cd '$(BUILD_DIR)' && ninja
    cd '$(BUILD_DIR)' && ninja install
