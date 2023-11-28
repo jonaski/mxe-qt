@@ -1,30 +1,15 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 0874e5e..014429b 100644
+index 206e4e0..9e79783 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -403,7 +403,6 @@ IF (CMAKE_C_COMPILER_ID MATCHES "Clang" OR CMAKE_C_COMPILER_ID MATCHES "GNU")
- ELSEIF(CMAKE_C_COMPILER_ID MATCHES "MSVC")
-   SET(WARNING_AS_ERROR "/WX" CACHE INTERNAL "WARNING_AS_ERROR")
+@@ -403,6 +403,7 @@ ELSEIF(CMAKE_C_COMPILER_ID MATCHES "MSVC")
  ENDIF()
--SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${WARNING_AS_ERROR}")
+ SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${WARNING_AS_ERROR}")
+ ENDIF()
++SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${WARNING_AS_ERROR}")
  
  
  IF(NOT REMOTEIO_PLUGIN_TYPE MATCHES "OFF")
-diff --git a/include/ma_global.h b/include/ma_global.h
-index 6d1c6f6..c103a60 100644
---- a/include/ma_global.h
-+++ b/include/ma_global.h
-@@ -34,9 +34,9 @@
- #if _MSC_VER < 1900
- #define snprintf _snprintf
- #endif
--#define strerror_r(errno,buf,len) strerror_s(buf,len,errno)
- #endif
- #define STDCALL __stdcall 
-+#define strerror_r(errno,buf,len) strerror_s(buf,len,errno)
- #endif
- 
- #include <ma_config.h>
 diff --git a/include/mysql.h b/include/mysql.h
 index 76b1683..f12c94a 100644
 --- a/include/mysql.h
@@ -88,10 +73,10 @@ index 43ed67b..7c8fdd0 100644
  ENDIF()
  
 diff --git a/libmariadb/secure/schannel_certs.c b/libmariadb/secure/schannel_certs.c
-index 1bcfb85..953c743 100644
+index c8ff375..d5992f8 100644
 --- a/libmariadb/secure/schannel_certs.c
 +++ b/libmariadb/secure/schannel_certs.c
-@@ -66,7 +66,7 @@ static DWORD get_last_error()
+@@ -64,7 +64,7 @@ static DWORD get_last_error()
  #define FAIL(...) \
     do{\
       status = get_last_error();\
