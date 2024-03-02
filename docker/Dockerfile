@@ -1,5 +1,8 @@
 FROM opensuse/tumbleweed
 
+ARG MXE_TARGET=x86_64-w64-mingw32.static
+ARG MXE_BUILD_TYPE=Debug
+
 COPY / /mxe-qt
 
 RUN zypper -n ar -c -f -n 'repo-mingw' https://download.opensuse.org/repositories/windows:/mingw:/win32/openSUSE_Tumbleweed/ repo-mingw
@@ -33,4 +36,4 @@ RUN mkdir -p /tmp/inetc && wget https://nsis.sourceforge.io/mediawiki/images/c/c
 RUN cd /tmp/inetc && unzip /tmp/inetc/Inetc.zip
 RUN cp /tmp/inetc/Plugins/x86-unicode/INetC.dll /usr/share/nsis/Plugins/x86-unicode/
 
-RUN cd mxe-qt && make -j 4 MXE_TARGETS="x86_64-w64-mingw32.shared" MXE_BUILD_TYPE="Debug" MXE_VERBOSE=1
+RUN cd mxe-qt && make -j 4 MXE_TARGETS="${MXE_TARGET}" MXE_BUILD_TYPE="${MXE_BUILD_TYPE}" MXE_VERBOSE=1
