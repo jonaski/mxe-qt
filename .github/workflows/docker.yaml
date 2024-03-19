@@ -41,5 +41,5 @@ jobs:
           build-args: |
             MXE_TARGET=${{matrix.arch}}-w64-mingw32.${{matrix.lib_type}}
             MXE_BUILD_TYPE=${{env.mxe_build_type}}
-          tags: jonaski/strawberry-mxe-${{matrix.arch}}-${{matrix.build_type}}:latest
+          tags: jonaski/mxe-qt-${{matrix.arch}}-${{matrix.build_type}}:latest
           push: true
