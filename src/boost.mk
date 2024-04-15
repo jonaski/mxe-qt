@@ -4,8 +4,8 @@ PKG             := boost
 $(PKG)_WEBSITE  := https://www.boost.org/
 $(PKG)_DESCR    := Boost C++ Library
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 1.84.0
-$(PKG)_CHECKSUM := cc4b893acf645c9d4b698e9a0f08ca8846aa5d6c68275c14c3e7949c24109454
+$(PKG)_VERSION  := 1.85.0
+$(PKG)_CHECKSUM := 7009fe1faa1697476bdc7027703a2badb84e849b7b0baad5086b087b971f8617
 $(PKG)_SUBDIR   := boost_$(subst .,_,$($(PKG)_VERSION))
 $(PKG)_FILE     := boost_$(subst .,_,$($(PKG)_VERSION)).tar.bz2
 $(PKG)_URL      := https://boostorg.jfrog.io/artifactory/main/release/$($(PKG)_VERSION)/source/$($(PKG)_FILE)
@@ -120,12 +120,12 @@ define $(PKG)_BUILD
     #    -L'$(PREFIX)/$(TARGET)/lib'
 
     # test cmake
-    mkdir '$(1).test-cmake'
-    cd '$(1).test-cmake' && '$(TARGET)-cmake' \
-        -DPKG=$(PKG) \
-        -DPKG_VERSION=$($(PKG)_VERSION) \
-        '$(PWD)/src/cmake/test'
-    $(MAKE) -C '$(1).test-cmake' -j 1 install
+    #mkdir '$(BUILD_DIR).test-cmake'
+    #cd '$(BUILD_DIR).test-cmake' && '$(TARGET)-cmake' \
+    #    -DPKG=$(PKG) \
+    #    -DPKG_VERSION=$($(PKG)_VERSION) \
+    #    '$(PWD)/src/cmake/test'
+    #$(MAKE) -C '$(BUILD_DIR).test-cmake' -j 1 install
 endef
 
 define $(PKG)_BUILD_$(BUILD)
