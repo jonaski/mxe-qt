@@ -1,15 +1,5 @@
-This file is part of MXE. See LICENSE.md for licensing information.
-
-Contains ad hoc patches for cross building.
-
-From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Jonas Kvinge <jonas@jkvinge.net>
-Date: Fri, 8 Oct 2021 21:20:35 +0200
-Subject: [PATCH 1/1] Build fixes
-
-
 diff --git a/src/Makefile.shlib b/src/Makefile.shlib
-index 1111111..2222222 100644
+index f94d59d..f728b65 100644
 --- a/src/Makefile.shlib
 +++ b/src/Makefile.shlib
 @@ -85,7 +85,7 @@ else
@@ -22,15 +12,29 @@ index 1111111..2222222 100644
  ifndef soname
  # additional flags for backend modules
 diff --git a/src/backend/Makefile b/src/backend/Makefile
-index 1111111..2222222 100644
+index 82cae98..c24a073 100644
 --- a/src/backend/Makefile
 +++ b/src/backend/Makefile
-@@ -85,11 +85,11 @@ ifeq ($(PORTNAME), win32)
+@@ -74,11 +74,11 @@ endif
+ ifeq ($(PORTNAME), cygwin)
+ 
+ postgres: $(OBJS)
+-	$(CC) $(CFLAGS) $(call expand_subsys,$^) $(LDFLAGS) -Wl,--stack,$(WIN32_STACK_RLIMIT) -Wl,--export-all-symbols -Wl,--out-implib=libpostgres.a $(LIBS) -o $@
++	$(CC) $(CFLAGS) $(call expand_subsys,$^) $(LDFLAGS) -Wl,--stack,$(WIN32_STACK_RLIMIT) -Wl,--export-all-symbols -Wl,--out-implib=libpostgres.dll.a $(LIBS) -o $@
+ 
+ # libpostgres.a is actually built in the preceding rule, but we need this to
+ # ensure it's newer than postgres; see notes in src/backend/parser/Makefile
+-libpostgres.a: postgres
++libpostgres.dll.a: postgres
+ 	touch $@
+ 
+ endif # cygwin
+@@ -87,11 +87,11 @@ ifeq ($(PORTNAME), win32)
  LIBS += -lsecur32
  
  postgres: $(OBJS) $(WIN32RES)
--	$(CC) $(CFLAGS) $(call expand_subsys,$(OBJS)) $(WIN32RES) $(LDFLAGS) $(LDFLAGS_EX) -Wl,--stack=$(WIN32_STACK_RLIMIT) -Wl,--export-all-symbols -Wl,--out-implib=libpostgres.a $(LIBS) -o $@$(X)
-+	$(CC) $(CFLAGS) $(call expand_subsys,$(OBJS)) $(WIN32RES) $(LDFLAGS) $(LDFLAGS_EX) -Wl,--stack=$(WIN32_STACK_RLIMIT) -Wl,--export-all-symbols -Wl,--out-implib=libpostgres.dll.a $(LIBS) -o $@$(X)
+-	$(CC) $(CFLAGS) $(call expand_subsys,$(OBJS)) $(WIN32RES) $(LDFLAGS) -Wl,--stack=$(WIN32_STACK_RLIMIT) -Wl,--export-all-symbols -Wl,--out-implib=libpostgres.a $(LIBS) -o $@$(X)
++	$(CC) $(CFLAGS) $(call expand_subsys,$(OBJS)) $(WIN32RES) $(LDFLAGS) -Wl,--stack=$(WIN32_STACK_RLIMIT) -Wl,--export-all-symbols -Wl,--out-implib=libpostgres.dll.a $(LIBS) -o $@$(X)
  
  # libpostgres.a is actually built in the preceding rule, but we need this to
  # ensure it's newer than postgres; see notes in src/backend/parser/Makefile
@@ -39,7 +43,13 @@ index 1111111..2222222 100644
  	touch $@
  
  endif # win32
-@@ -202,7 +202,7 @@ endif
+@@ -191,12 +191,12 @@ distprep:
+ install: all installdirs install-bin
+ ifeq ($(PORTNAME), cygwin)
+ ifeq ($(MAKE_DLL), true)
+-	$(INSTALL_DATA) libpostgres.a '$(DESTDIR)$(libdir)/libpostgres.a'
++	$(INSTALL_DATA) libpostgres.dll.a '$(DESTDIR)$(libdir)/libpostgres.dll.a'
+ endif
  endif
  ifeq ($(PORTNAME), win32)
  ifeq ($(MAKE_DLL), true)
@@ -48,7 +58,13 @@ index 1111111..2222222 100644
  endif
  endif
  	$(MAKE) -C catalog install-data
-@@ -267,7 +267,7 @@ endif
+@@ -250,12 +250,12 @@ ifeq ($(MAKE_EXPORTS), true)
+ endif
+ ifeq ($(PORTNAME), cygwin)
+ ifeq ($(MAKE_DLL), true)
+-	rm -f '$(DESTDIR)$(libdir)/libpostgres.a'
++	rm -f '$(DESTDIR)$(libdir)/libpostgres.dll.a'
+ endif
  endif
  ifeq ($(PORTNAME), win32)
  ifeq ($(MAKE_DLL), true)
@@ -57,8 +73,12 @@ index 1111111..2222222 100644
  endif
  endif
  	$(MAKE) -C catalog uninstall-data
-@@ -289,7 +289,7 @@ ifeq ($(PORTNAME), cygwin)
- 	rm -f postgres.dll libpostgres.a
+@@ -274,10 +274,10 @@ endif
+ clean:
+ 	rm -f $(LOCALOBJS) postgres$(X) $(POSTGRES_IMP)
+ ifeq ($(PORTNAME), cygwin)
+-	rm -f postgres.dll libpostgres.a
++	rm -f postgres.dll libpostgres.dll.a
  endif
  ifeq ($(PORTNAME), win32)
 -	rm -f postgres.dll libpostgres.a $(WIN32RES)
@@ -67,10 +87,10 @@ index 1111111..2222222 100644
  
  distclean: clean
 diff --git a/src/bin/psql/command.c b/src/bin/psql/command.c
-index 1111111..2222222 100644
+index 6733f00..2092990 100644
 --- a/src/bin/psql/command.c
 +++ b/src/bin/psql/command.c
-@@ -23,7 +23,7 @@
+@@ -24,7 +24,7 @@
  #include <sys/stat.h>			/* for stat() */
  #endif
  
@@ -80,10 +100,10 @@ index 1111111..2222222 100644
  #include "common.h"
  #include "common/logging.h"
 diff --git a/src/bin/psql/describe.c b/src/bin/psql/describe.c
-index 1111111..2222222 100644
+index 45f6a86..a567013 100644
 --- a/src/bin/psql/describe.c
 +++ b/src/bin/psql/describe.c
-@@ -15,10 +15,10 @@
+@@ -16,10 +16,10 @@
  #include <ctype.h>
  
  #include "catalog/pg_am.h"
@@ -99,7 +119,7 @@ index 1111111..2222222 100644
  #include "common/logging.h"
  #include "describe.h"
 diff --git a/src/common/relpath.c b/src/common/relpath.c
-index 1111111..2222222 100644
+index 87de5f6..729f9c0 100644
 --- a/src/common/relpath.c
 +++ b/src/common/relpath.c
 @@ -18,7 +18,7 @@
@@ -112,7 +132,7 @@ index 1111111..2222222 100644
  #include "storage/backendid.h"
  
 diff --git a/src/fe_utils/print.c b/src/fe_utils/print.c
-index 1111111..2222222 100644
+index 7af1ccb..6e9599b 100644
 --- a/src/fe_utils/print.c
 +++ b/src/fe_utils/print.c
 @@ -29,7 +29,7 @@
@@ -125,7 +145,7 @@ index 1111111..2222222 100644
  #include "fe_utils/print.h"
  
 diff --git a/src/include/catalog/pg_am.h b/src/include/catalog/pg_am.h
-index 1111111..2222222 100644
+index dab54be..a63baca 100644
 --- a/src/include/catalog/pg_am.h
 +++ b/src/include/catalog/pg_am.h
 @@ -19,7 +19,7 @@
@@ -138,7 +158,7 @@ index 1111111..2222222 100644
  /* ----------------
   *		pg_am definition.  cpp turns this into
 diff --git a/src/include/catalog/pg_attribute.h b/src/include/catalog/pg_attribute.h
-index 1111111..2222222 100644
+index f8b4861..d16a750 100644
 --- a/src/include/catalog/pg_attribute.h
 +++ b/src/include/catalog/pg_attribute.h
 @@ -23,7 +23,7 @@
@@ -150,11 +170,24 @@ index 1111111..2222222 100644
  
  /* ----------------
   *		pg_attribute definition.  cpp turns this into
+diff --git a/src/include/nodes/nodes.h b/src/include/nodes/nodes.h
+index f8e8fe6..c950c6f 100644
+--- a/src/include/nodes/nodes.h
++++ b/src/include/nodes/nodes.h
+@@ -27,7 +27,7 @@ typedef enum NodeTag
+ {
+ 	T_Invalid = 0,
+ 
+-#include "nodes/nodetags.h"
++#include "../../backend/nodes/nodetags.h"
+ } NodeTag;
+ 
+ /*
 diff --git a/src/include/storage/lwlock.h b/src/include/storage/lwlock.h
-index 1111111..2222222 100644
+index 34169e5..b18c640 100644
 --- a/src/include/storage/lwlock.h
 +++ b/src/include/storage/lwlock.h
-@@ -71,7 +71,7 @@ extern PGDLLIMPORT NamedLWLockTranche *NamedLWLockTrancheArray;
+@@ -83,7 +83,7 @@ extern PGDLLIMPORT NamedLWLockTranche *NamedLWLockTrancheArray;
  extern PGDLLIMPORT int NamedLWLockTrancheRequests;
  
  /* Names for fixed lwlocks */
@@ -164,10 +197,10 @@ index 1111111..2222222 100644
  /*
   * It's a bit odd to declare NUM_BUFFER_PARTITIONS and NUM_LOCK_PARTITIONS
 diff --git a/src/include/utils/elog.h b/src/include/utils/elog.h
-index 1111111..2222222 100644
+index 0292e88..5bbd466 100644
 --- a/src/include/utils/elog.h
 +++ b/src/include/utils/elog.h
-@@ -70,7 +70,7 @@
+@@ -76,7 +76,7 @@ struct Node;
  #define ERRCODE_IS_CATEGORY(ec)  (((ec) & ~((1 << 12) - 1)) == 0)
  
  /* SQLSTATE codes for errors are defined in a separate file */

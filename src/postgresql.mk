@@ -4,8 +4,8 @@ PKG             := postgresql
 $(PKG)_WEBSITE  := https://www.postgresql.org/
 $(PKG)_DESCR    := PostgreSQL
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 15.4
-$(PKG)_CHECKSUM := baec5a4bdc4437336653b6cb5d9ed89be5bd5c0c58b94e0becee0a999e63c8f9
+$(PKG)_VERSION  := 16.3
+$(PKG)_CHECKSUM := 331963d5d3dc4caf4216a049fa40b66d6bcb8c730615859411b9518764e60585
 $(PKG)_SUBDIR   := postgresql-$($(PKG)_VERSION)
 $(PKG)_FILE     := postgresql-$($(PKG)_VERSION).tar.bz2
 $(PKG)_URL      := https://ftp.postgresql.org/pub/source/v$($(PKG)_VERSION)/$($(PKG)_FILE)
@@ -42,7 +42,7 @@ define $(PKG)_BUILD
         --with-openssl \
         --with-zlib \
         --with-system-tzdata=/dev/null \
-        CFLAGS="-DSSL_library_init=OPENSSL_init_ssl -Wno-implicit-function-declaration" \
+        CFLAGS="-DSSL_library_init=OPENSSL_init_ssl" \
         LIBS="-lsecur32 `'$(TARGET)-pkg-config' openssl pthreads --libs`" \
         ac_cv_func_getaddrinfo=no
 
