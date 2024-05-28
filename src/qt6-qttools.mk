@@ -17,6 +17,7 @@ $(PKG)_OO_DEPS_$(BUILD) += qt6-conf ninja
 $(PKG)_UPDATE = $(qt6-qtbase_UPDATE)
 
 define $(PKG)_BUILD
+    mv '$(PREFIX)/$(TARGET)/lib/pkgconfig/harfbuzz.pc' '$(PREFIX)/$(TARGET)/lib/pkgconfig/harfbuzz.pc_'
     $(QT6_CMAKE) --log-level="DEBUG" -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' \
         -DCMAKE_BUILD_TYPE='$(MXE_BUILD_TYPE)' \
         -DBUILD_SHARED_LIBS=$(CMAKE_SHARED_BOOL) \
@@ -35,6 +36,8 @@ define $(PKG)_BUILD
         -DFEATURE_qtdiag=OFF \
         -DFEATURE_qtplugininfo=OFF \
         -DFEATURE_linguist=ON
+
+    mv '$(PREFIX)/$(TARGET)/lib/pkgconfig/harfbuzz.pc_' '$(PREFIX)/$(TARGET)/lib/pkgconfig/harfbuzz.pc'
 
     cmake --build '$(BUILD_DIR)' -j '$(JOBS)'
     cmake --install '$(BUILD_DIR)'
