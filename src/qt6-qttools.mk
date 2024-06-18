@@ -4,8 +4,8 @@ PKG             := qt6-qttools
 $(PKG)_WEBSITE  := https://www.qt.io/
 $(PKG)_DESCR    := Qt 6 Tools
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 6.7.1
-$(PKG)_CHECKSUM := 0953cddf6248f3959279a10904892e8a98eb3e463d729a174b6fc47febd99824
+$(PKG)_VERSION  := 6.7.2
+$(PKG)_CHECKSUM := 58e855ad1b2533094726c8a425766b63a04a0eede2ed85086860e54593aa4b2a
 $(PKG)_FILE     := qttools-everywhere-src-$($(PKG)_VERSION).tar.xz
 $(PKG)_SUBDIR   := qttools-everywhere-src-$($(PKG)_VERSION)
 $(PKG)_URL      := https://download.qt.io/official_releases/qt/$(call SHORT_PKG_VERSION,$(PKG))/$($(PKG)_VERSION)/submodules/$($(PKG)_FILE)
@@ -17,7 +17,6 @@ $(PKG)_OO_DEPS_$(BUILD) += qt6-conf ninja
 $(PKG)_UPDATE = $(qt6-qtbase_UPDATE)
 
 define $(PKG)_BUILD
-    mv '$(PREFIX)/$(TARGET)/lib/pkgconfig/harfbuzz.pc' '$(PREFIX)/$(TARGET)/lib/pkgconfig/harfbuzz.pc_'
     $(QT6_CMAKE) --log-level="DEBUG" -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' \
         -DCMAKE_BUILD_TYPE='$(MXE_BUILD_TYPE)' \
         -DBUILD_SHARED_LIBS=$(CMAKE_SHARED_BOOL) \
@@ -36,8 +35,6 @@ define $(PKG)_BUILD
         -DFEATURE_qtdiag=OFF \
         -DFEATURE_qtplugininfo=OFF \
         -DFEATURE_linguist=ON
-
-    mv '$(PREFIX)/$(TARGET)/lib/pkgconfig/harfbuzz.pc_' '$(PREFIX)/$(TARGET)/lib/pkgconfig/harfbuzz.pc'
 
     cmake --build '$(BUILD_DIR)' -j '$(JOBS)'
     cmake --install '$(BUILD_DIR)'
