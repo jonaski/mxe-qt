@@ -29,7 +29,7 @@ define $(PKG)_BUILD_COMMON
         --buildtype='$(MESON_BUILD_TYPE)' \
         -Dzlib=enabled \
         -Dbzip2=enabled \
-        -Dbrotli=enabled \
+        -Dbrotli=disabled \
         -Dpng=enabled \
         -Dharfbuzz=enabled \
         -Dtests=disabled \
