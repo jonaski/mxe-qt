@@ -42,7 +42,7 @@ define $(PKG)_BUILD
         --with-openssl \
         --with-zlib \
         --with-system-tzdata=/dev/null \
-        CFLAGS="-DSSL_library_init=OPENSSL_init_ssl" \
+        CFLAGS="-DSSL_library_init=OPENSSL_init_ssl -Wno-implicit-function-declaration" \
         LIBS="-lsecur32 `'$(TARGET)-pkg-config' openssl pthreads --libs`" \
         ac_cv_func_getaddrinfo=no
 
