@@ -17,7 +17,6 @@ $(PKG)_OO_DEPS_$(BUILD) += qt6-conf ninja
 $(PKG)_UPDATE = $(qt6-qtbase_UPDATE)
 
 define $(PKG)_BUILD
-    CXXFLAGS='-msse2' \
     $(QT6_CMAKE) --log-level="DEBUG" -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' \
         -DCMAKE_BUILD_TYPE='$(MXE_BUILD_TYPE)' \
         -DBUILD_SHARED_LIBS=$(CMAKE_SHARED_BOOL) \

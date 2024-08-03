@@ -25,7 +25,6 @@ define $(PKG)_BUILD
     rm -rf '$(PREFIX)/$(TARGET)/qt6'
     rm -rf $(SOURCE_DIR)/src/3rdparty/{harfbuzz-ng,libjpeg,libpng,pixman,sqlite,zlib}
     mkdir -p '$(PREFIX)/$(TARGET)/qt6/bin/'
-    CXXFLAGS='-msse2' \
     PKG_CONFIG="${TARGET}-pkg-config" \
     PKG_CONFIG_SYSROOT_DIR="/" \
     PKG_CONFIG_LIBDIR="$(PREFIX)/$(TARGET)/lib/pkgconfig" \
