@@ -3,8 +3,8 @@
 PKG             := mesa
 $(PKG)_WEBSITE  := https://mesa3d.org
 $(PKG)_DESCR    := The Mesa 3D Graphics Library
-$(PKG)_VERSION  := 24.1.5
-$(PKG)_CHECKSUM := 02761ffd965dd64b95421ebfca1191d73724aba00f30034009237564f34cf976
+$(PKG)_VERSION  := 24.2.3
+$(PKG)_CHECKSUM := 4ea18b1155a4544a09f7361848974768f6f73c19d88f63de2ec650be313b2d0c
 $(PKG)_SUBDIR   := mesa-$($(PKG)_VERSION)
 $(PKG)_FILE     := mesa-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://archive.mesa3d.org/$($(PKG)_FILE)
@@ -15,7 +15,7 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
-    cd '$(SOURCE_DIR)' && '$(TARGET)-meson' --buildtype='$(MESON_BUILD_TYPE)' '$(BUILD_DIR)'
+    cd '$(SOURCE_DIR)' && '$(TARGET)-meson' --buildtype='$(MESON_BUILD_TYPE)' '$(BUILD_DIR)' -Dgallium-drivers="['softpipe', 'zink', 'd3d12']"
     cd '$(BUILD_DIR)' && ninja
     cd '$(BUILD_DIR)' && ninja install
     for i in EGL GLES GLES2 GLES3 KHR; do \
