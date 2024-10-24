@@ -4,9 +4,9 @@ PKG             := icu4c
 $(PKG)_WEBSITE  := https://icu.unicode.org/
 $(PKG)_DESCR    := ICU4C
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 75.1
+$(PKG)_VERSION  := 76.1
 $(PKG)_MAJOR    := $(word 1,$(subst ., ,$($(PKG)_VERSION)))
-$(PKG)_CHECKSUM := 925e6b4b8cf8856e0ac214f6f34e30dee63b7bb7a50460ab4603950eff48f89e
+$(PKG)_CHECKSUM := a2c443404f00098e9e90acf29dc318e049d2dc78d9ae5f46efb261934a730ce2
 $(PKG)_GH_CONF  := unicode-org/icu/releases/latest,release-,,,-
 $(PKG)_SUBDIR   := icu-release-$(subst .,-,$($(PKG)_VERSION))/$(PKG)
 $(PKG)_URL      := $($(PKG)_WEBSITE)/releases/download/release-$(subst .,-,$($(PKG)_VERSION))/icu4c-$(subst .,_,$($(PKG)_VERSION))-src.tgz
@@ -36,7 +36,7 @@ define $(PKG)_BUILD_COMMON
 endef
 
 define $(PKG)_BUILD_TEST
-    '$(TARGET)-gcc' -W -Wall -Werror -ansi -pedantic '$(TEST_FILE)' -o '$(PREFIX)/$(TARGET)/bin/test-$(PKG).exe' `'$(TARGET)-pkg-config' icu-uc icu-io --cflags --libs`
+    '$(TARGET)-gcc' -W -Wall -Werror -ansi -pedantic '$(TEST_FILE)' -o '$(PREFIX)/$(TARGET)/bin/test-$(PKG).exe' `'$(TARGET)-pkg-config' icu-uc icu-io icu-i18n --cflags --libs`
 endef
 
 define $(PKG)_BUILD_SHARED
