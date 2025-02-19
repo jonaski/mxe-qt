@@ -4,13 +4,14 @@ PKG             := qt6-activeqt
 $(PKG)_WEBSITE  := https://www.qt.io/
 $(PKG)_DESCR    := Qt 6 Active Qt
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 6.7.3
-$(PKG)_CHECKSUM := 2a845e2e10bc2bfd9c3e4d7e00d8081de885fd8fd5f26276e2a28fadf3d71a0f
+$(PKG)_VERSION  := 6.8.2
+$(PKG)_CHECKSUM := 34c26dc911a1863965597266452c719c39977c4d2e7f59d2497e2b1cb22cb925
 $(PKG)_SUBDIR   := qtactiveqt-everywhere-src-$($(PKG)_VERSION)
 $(PKG)_FILE     := qtactiveqt-everywhere-src-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://download.qt.io/official_releases/qt/$(call SHORT_PKG_VERSION,$(PKG))/$($(PKG)_VERSION)/submodules/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc qt6-qtbase qt6-qttools
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
+$(PKG)_DEPS_$(BUILD) := qt6-qtbase qt6-qttools
+$(PKG)_DEPS     := cc qt6-qtbase qt6-qttools $(BUILD)~$(PKG)
 
 $(PKG)_UPDATE = $(qt6-qtbase_UPDATE)
 
@@ -28,3 +29,12 @@ define $(PKG)_BUILD
     cmake --build '$(BUILD_DIR)' -j '$(JOBS)'
     cmake --install '$(BUILD_DIR)'
 endef
+
+define $(PKG)_BUILD_$(BUILD)
+    $(QT6_CMAKE) --log-level="DEBUG" -G 'Ninja' -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' -DCMAKE_BUILD_TYPE='$(MXE_BUILD_TYPE)'
+    cmake --build '$(BUILD_DIR)' -j '$(JOBS)'
+    cmake --install '$(BUILD_DIR)'
+endef
+
+$(PKG)_BUILD_SHARED =
+$(PKG)_BUILD_STATIC =

@@ -4,13 +4,13 @@ PKG             := qt6-qtbase
 $(PKG)_WEBSITE  := https://www.qt.io/
 $(PKG)_DESCR    := Qt 6 Base
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 6.7.3
-$(PKG)_CHECKSUM := 8ccbb9ab055205ac76632c9eeddd1ed6fc66936fc56afc2ed0fd5d9e23da3097
+$(PKG)_VERSION  := 6.8.2
+$(PKG)_CHECKSUM := 012043ce6d411e6e8a91fdc4e05e6bedcfa10fcb1347d3c33908f7fdd10dfe05
 $(PKG)_FILE     := qtbase-everywhere-src-$($(PKG)_VERSION).tar.xz
 $(PKG)_SUBDIR   := qtbase-everywhere-src-$($(PKG)_VERSION)
 $(PKG)_URL      := https://download.qt.io/official_releases/qt/$(call SHORT_PKG_VERSION,$(PKG))/$($(PKG)_VERSION)/submodules/$($(PKG)_FILE)
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
-$(PKG)_DEPS     := cc openssl pcre2 fontconfig freetype harfbuzz glib zlib libpng zstd brotli jpeg sqlite mesa libmariadbclient postgresql $(BUILD)~$(PKG) $(BUILD)~qt6-qttools
+$(PKG)_DEPS     := cc openssl pcre2 fontconfig freetype harfbuzz glib zlib libpng zstd brotli jpeg sqlite mesa pixman libmariadbclient postgresql $(BUILD)~$(PKG) $(BUILD)~qt6-qttools
 $(PKG)_DEPS_$(BUILD) :=
 $(PKG)_OO_DEPS_$(BUILD) += qt6-conf ninja
 
@@ -23,7 +23,7 @@ endef
 
 define $(PKG)_BUILD
     rm -rf '$(PREFIX)/$(TARGET)/qt6'
-    rm -rf $(SOURCE_DIR)/src/3rdparty/{harfbuzz-ng,libjpeg,libpng,pixman,sqlite,zlib}
+    rm -rf $(SOURCE_DIR)/src/3rdparty/{freetype,harfbuzz-ng,libjpeg,libpng,pixman,sqlite,zlib}
     mkdir -p '$(PREFIX)/$(TARGET)/qt6/bin/'
     PKG_CONFIG="${TARGET}-pkg-config" \
     PKG_CONFIG_SYSROOT_DIR="/" \
@@ -79,6 +79,7 @@ define $(PKG)_BUILD
         -DFEATURE_system_png=ON \
         -DFEATURE_system_jpeg=ON \
         -DFEATURE_system_pcre2=ON \
+        -DFEATURE_system_freetype=ON \
         -DFEATURE_system_harfbuzz=ON \
         $(if $(BUILD_SHARED), -DSQLite3_LIBRARY='$(PREFIX)/$(TARGET)/lib/libsqlite3.dll') \
         -DFEATURE_system_sqlite=ON
@@ -94,7 +95,7 @@ endef
 
 define $(PKG)_BUILD_$(BUILD)
     rm -rf '$(PREFIX)/$(BUILD)/qt6'
-    rm -rf $(SOURCE_DIR)/src/3rdparty/{freetype,harfbuzz-ng,libjpeg,libpng,pixman,sqlite}
+    rm -rf $(SOURCE_DIR)/src/3rdparty/{freetype,harfbuzz-ng,libjpeg,libpng,sqlite}
     '$(TARGET)-cmake' -S '$(SOURCE_DIR)' -B '$(BUILD_DIR)' \
         -G Ninja \
         -DCMAKE_INSTALL_PREFIX='$(PREFIX)/$(TARGET)/qt6' \
