@@ -4,13 +4,13 @@ PKG             := boost
 $(PKG)_WEBSITE  := https://www.boost.org/
 $(PKG)_DESCR    := Boost C++ Library
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 1.85.0
-$(PKG)_CHECKSUM := 7009fe1faa1697476bdc7027703a2badb84e849b7b0baad5086b087b971f8617
+$(PKG)_VERSION  := 1.87.0
+$(PKG)_CHECKSUM := af57be25cb4c4f4b413ed692fe378affb4352ea50fbe294a11ef548f4d527d89
 $(PKG)_SUBDIR   := boost_$(subst .,_,$($(PKG)_VERSION))
 $(PKG)_FILE     := boost_$(subst .,_,$($(PKG)_VERSION)).tar.bz2
 $(PKG)_URL      := https://archives.boost.io/release/$($(PKG)_VERSION)/source/$($(PKG)_FILE)
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
-$(PKG)_DEPS     := cc bzip2 expat zlib xz
+$(PKG)_DEPS     := cc bzip2 expat zlib xz dlfcn-win32
 AWK             = $(shell which $(shell gawk --help >/dev/null 2>&1 && echo g)awk)
 
 $(PKG)_DEPS_$(BUILD) := zlib
