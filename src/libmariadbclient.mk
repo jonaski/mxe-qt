@@ -23,6 +23,7 @@ define $(PKG)_BUILD
         -DINSTALL_BIN_DIR="$(PREFIX)/$(TARGET)/bin" \
         -DWITH_SSL=ON \
         -DWITH_UNIT_TESTS=OFF \
+        -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
         '$(1)'
     # def file created by cmake creates link errors
     $(if $(findstring i686-w64-mingw32.shared, $(TARGET)), cp '$(PWD)/src/mariadbclient.def' '$(BUILD_DIR)/libmariadb/mariadbclient.def')
