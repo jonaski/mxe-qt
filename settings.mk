@@ -29,3 +29,6 @@ MXE_TARGETS := i686-w64-mingw32.static x86_64-w64-mingw32.static i686-w64-mingw3
 #local-pkg-list: $(LOCAL_PKG_LIST)
 
 #MXE_USE_CCACHE :=
+
+MXE_GCC_THREADS := win32
+
