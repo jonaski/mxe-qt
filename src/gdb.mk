@@ -26,7 +26,8 @@ define $(PKG)_BUILD
         --enable-static \
         --disable-shared \
         host_configargs="LIBS=\"-lmman\"" \
-        CFLAGS='-Wno-implicit-function-declaration' \
+        CFLAGS='-D_WIN32_WINNT=0x0601 -Wno-implicit-function-declaration' \
+        CXXFLAGS='-D_WIN32_WINNT=0x0601' \
         LDFLAGS='-Wl,--allow-multiple-definition'
 
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
