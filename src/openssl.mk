@@ -6,9 +6,9 @@ $(PKG)_DESCR    := OpenSSL
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 3.5.0
 $(PKG)_CHECKSUM := 344d0a79f1a9b08029b0744e2cc401a43f9c90acd1044d09a530b4885a8e9fc0
-$(PKG)_SUBDIR   := openssl-$($(PKG)_VERSION)
-$(PKG)_FILE     := openssl-$($(PKG)_VERSION).tar.gz
-$(PKG)_URL      := https://www.openssl.org/source/$($(PKG)_FILE)
+$(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
+$(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.gz
+$(PKG)_URL      := https://github.com/openssl/openssl/releases/download/$(PKG)-$($(PKG)_VERSION)/$($(PKG)_FILE)
 $(PKG)_URL_2    := https://www.openssl.org/source/old/$(call tr,$([a-z]),,$($(PKG)_VERSION))/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc zlib
 
