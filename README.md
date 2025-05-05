@@ -1,4 +1,4 @@
-# :floppy_disk: MXE (M cross environment) [![License][license-badge]][license-page] ![Deploy](https://github.com/jonaski/mxe-qt/workflows/Deploy/badge.svg)
+# :floppy_disk: MXE (M cross environment) [![License][license-badge]][license-page] ![Docker](https://github.com/jonaski/mxe-qt/workflows/Docker/badge.svg)
 
 [license-page]: LICENSE.md
 [license-badge]: https://img.shields.io/badge/License-MIT-brightgreen.svg
