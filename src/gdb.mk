@@ -27,8 +27,7 @@ define $(PKG)_BUILD
         --disable-shared \
         host_configargs="LIBS=\"-lmman\"" \
         CFLAGS='-D_WIN32_WINNT=0x0601 -Wno-implicit-function-declaration' \
-        CXXFLAGS='-D_WIN32_WINNT=0x0601' \
-        LDFLAGS='-Wl,--allow-multiple-definition'
+        CXXFLAGS='-D_WIN32_WINNT=0x0601'
 
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
     $(INSTALL) -m755 '$(BUILD_DIR)/gdb/gdb.exe' '$(PREFIX)/$(TARGET)/bin/'
