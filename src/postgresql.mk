@@ -4,12 +4,12 @@ PKG             := postgresql
 $(PKG)_WEBSITE  := https://www.postgresql.org/
 $(PKG)_DESCR    := PostgreSQL
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 16.4
-$(PKG)_CHECKSUM := 971766d645aa73e93b9ef4e3be44201b4f45b5477095b049125403f9f3386d6f
+$(PKG)_VERSION  := 17.5
+$(PKG)_CHECKSUM := fcb7ab38e23b264d1902cb25e6adafb4525a6ebcbd015434aeef9eda80f528d8
 $(PKG)_SUBDIR   := postgresql-$($(PKG)_VERSION)
 $(PKG)_FILE     := postgresql-$($(PKG)_VERSION).tar.bz2
 $(PKG)_URL      := https://ftp.postgresql.org/pub/source/v$($(PKG)_VERSION)/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc pthreads readline zlib openssl libxml2 icu4c
+$(PKG)_DEPS     := cc pthreads readline zlib openssl libxml2 icu4c meson-conf
 
 define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://ftp.postgresql.org/pub/source/' | \
@@ -20,68 +20,19 @@ define $(PKG)_UPDATE
     tail -1
 endef
 
-define $(PKG)_BUILD
-    cp -Rp '$(1)' '$(1).native'
-    # Since we build only client library, use bogus tzdata to satisfy configure.
-    # pthreads is needed in both LIBS and PTHREAD_LIBS
-    cd '$(1)' && ./configure \
-        $(MXE_CONFIGURE_OPTS) \
-        --disable-rpath \
-        --without-tcl \
-        --without-perl \
-        --without-python \
-        --without-gssapi \
-        --without-krb5 \
-        --without-pam \
-        --without-ldap \
-        --without-bonjour \
-        --without-readline \
-        --without-ossp-uuid \
-        --without-libxml \
-        --without-libxslt \
-        --with-openssl \
-        --with-zlib \
-        --with-system-tzdata=/dev/null \
-        CFLAGS="-DSSL_library_init=OPENSSL_init_ssl" \
-        LIBS="-lsecur32 `'$(TARGET)-pkg-config' openssl pthreads --libs`" \
-        ac_cv_func_getaddrinfo=no
-
-    # enable_thread_safety means "build internal pthreads" on windows
-    # disable it and link mingw-w64 pthreads to and avoid name conflicts
-    $(MAKE) -C '$(1)'/src/interfaces/libpq -j '$(JOBS)' install enable_thread_safety=no PTHREAD_LIBS="`'$(TARGET)-pkg-config' pthreads --libs`"
-    $(MAKE) -C '$(1)'/src/port             -j '$(JOBS)'
-    $(MAKE) -C '$(1)'/src/bin/psql         -j '$(JOBS)' install
-    $(INSTALL) -m644 '$(1)/src/include/pg_config.h'     '$(PREFIX)/$(TARGET)/include/'
-    $(INSTALL) -m644 '$(1)/src/include/pg_config_ext.h' '$(PREFIX)/$(TARGET)/include/'
-    $(INSTALL) -m644 '$(1)/src/include/postgres_ext.h'  '$(PREFIX)/$(TARGET)/include/'
-    $(INSTALL) -d    '$(PREFIX)/$(TARGET)/include/libpq'
-    $(INSTALL) -m644 '$(1)'/src/include/libpq/*         '$(PREFIX)/$(TARGET)/include/libpq/'
-
-    # Build a native pg_config.
-    $(SED) -i 's,-DVAL_,-D_DISABLED_VAL_,g' '$(1).native'/src/bin/pg_config/Makefile
-    cd '$(1).native' && ./configure \
+define $(PKG)_BUILD_$(BUILD)
+    cd '$(SOURCE_DIR)' && meson \
         --prefix='$(PREFIX)/$(TARGET)' \
-        --disable-shared \
-        --disable-rpath \
-        --with-openssl \
-        --without-tcl \
-        --without-perl \
-        --without-python \
-        --without-gssapi \
-        --without-krb5 \
-        --without-pam \
-        --without-ldap \
-        --without-bonjour \
-        --without-readline \
-        --without-ossp-uuid \
-        --without-libxml \
-        --without-libxslt \
-        --without-zlib \
-        --with-system-tzdata=/dev/null
-    $(MAKE) -C '$(1).native'/src/port          -j '$(JOBS)'
-    $(MAKE) -C '$(1).native'/src/bin/pg_config -j '$(JOBS)' install
-    ln -sf '$(PREFIX)/$(TARGET)/bin/pg_config' '$(PREFIX)/bin/$(TARGET)-pg_config'
+        --buildtype='$(MESON_BUILD_TYPE)' \
+        --pkg-config-path='$(PREFIX)/$(TARGET)/bin/pkgconf' \
+        --wrap-mode=nodownload \
+        '$(BUILD_DIR)'
+    cd '$(BUILD_DIR)' && ninja
+    cd '$(BUILD_DIR)' && ninja install
 endef
 
-# Static build is currently broken.
-$(PKG)_BUILD_STATIC =
+define $(PKG)_BUILD
+    cd '$(SOURCE_DIR)' && CFLAGS='-Wno-implicit-function-declaration -Wno-int-conversion' LDFLAGS='-liconv -ltermcap' '$(TARGET)-meson' --buildtype='$(MESON_BUILD_TYPE)' -Dlibedit_preferred=true '$(BUILD_DIR)'
+    cd '$(BUILD_DIR)' && ninja
+    cd '$(BUILD_DIR)' && ninja install
+endef
