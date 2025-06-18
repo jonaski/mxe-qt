@@ -23,7 +23,7 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
-    cd '$(1)' && CC_FOR_BUILD=$(BUILD_CC) ./configure $(MXE_CONFIGURE_OPTS) --enable-cxx --without-readline
+    cd '$(1)' && CC_FOR_BUILD=$(BUILD_CC) CFLAGS='-std=gnu17 -Wno-implicit-int' ./configure $(MXE_CONFIGURE_OPTS) --enable-cxx --without-readline
     $(MAKE) -C '$(1)' -j '$(JOBS)'
     $(MAKE) -C '$(1)' -j 1 install
 
@@ -40,7 +40,7 @@ endef
 
 define $(PKG)_BUILD_$(BUILD)
     mkdir '$(1).build'
-    cd '$(1).build' && '$(1)/configure' $(MXE_CONFIGURE_OPTS)
+    cd '$(1).build' && '$(1)/configure' $(MXE_CONFIGURE_OPTS) CFLAGS='-std=gnu17'
     $(MAKE) -C '$(1).build' -j '$(JOBS)' man1_MANS=
     $(MAKE) -C '$(1).build' -j 1 install man1_MANS=
 endef
