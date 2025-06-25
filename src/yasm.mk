@@ -20,7 +20,7 @@ define $(PKG)_BUILD
 
     # yasm is always static
     # build libyasm and tools
-    cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/configure' $(MXE_CONFIGURE_OPTS) --disable-rpath --disable-nls --disable-python
+    cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/configure' $(MXE_CONFIGURE_OPTS) --disable-rpath --disable-nls --disable-python CFLAGS='-std=c17'
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
 endef
