@@ -42,7 +42,7 @@ define $(PKG)_BUILD
         --with-openssl \
         --with-zlib \
         --with-system-tzdata=/dev/null \
-        CFLAGS="-DSSL_library_init=OPENSSL_init_ssl" \
+        CFLAGS="-std=c17 -DSSL_library_init=OPENSSL_init_ssl" \
         LIBS="-lsecur32 `'$(TARGET)-pkg-config' openssl pthreads --libs`" \
         ac_cv_func_getaddrinfo=no
 
@@ -77,7 +77,8 @@ define $(PKG)_BUILD
         --without-libxml \
         --without-libxslt \
         --without-zlib \
-        --with-system-tzdata=/dev/null
+        --with-system-tzdata=/dev/null \
+        CFLAGS='-std=c17'
     $(MAKE) -C '$(1).native'/src/port          -j '$(JOBS)'
     $(MAKE) -C '$(1).native'/src/bin/pg_config -j '$(JOBS)' install
     ln -sf '$(PREFIX)/$(TARGET)/bin/pg_config' '$(PREFIX)/bin/$(TARGET)-pg_config'
