@@ -27,7 +27,7 @@ define $(PKG)_CONFIGURE
         --prefix='$(PREFIX)' \
         --libdir='$(PREFIX)/lib' \
         --with-sysroot='$(PREFIX)/$(TARGET)' \
-        --enable-languages='c,c++,objc,fortran' \
+        --enable-languages='c,c++,objc' \
         --enable-version-specific-runtime-libs \
         --with-gcc \
         --with-gnu-ld \
@@ -48,7 +48,7 @@ define $(PKG)_CONFIGURE
         --with-as='$(PREFIX)/bin/$(TARGET)-as' \
         --with-ld='$(PREFIX)/bin/$(TARGET)-ld' \
         --with-nm='$(PREFIX)/bin/$(TARGET)-nm' \
-        $(shell [ `uname -s` == Darwin ] && echo "LDFLAGS='-Wl,-no_pie'") \
+        --disable-libquadmath \
         $(PKG_CONFIGURE_OPTS)
 endef
 
@@ -127,11 +127,7 @@ define $(PKG)_POST_BUILD
     $(SED) -i 's,-lmingwex,-lmingwex -lssp_nonshared -lssp,' '$(PREFIX)/lib/gcc/$(TARGET)/$($(PKG)_VERSION)/specs'
 
     # compile test
-    cd '$(PREFIX)/$(TARGET)/bin' && '$(TARGET)-gcc' \
-        -W -Wall -Werror -ansi -pedantic \
-        -D_FORTIFY_SOURCE=2 \
-        --coverage -fprofile-dir=. -v \
-        '$(TEST_FILE)' -o '$(PREFIX)/$(TARGET)/bin/test-$(PKG).exe'
+    cd '$(PREFIX)/$(TARGET)/bin' && '$(TARGET)-gcc' -W -Wall -Werror -ansi -pedantic -D_FORTIFY_SOURCE=2 --coverage -fprofile-dir=. -v '$(TEST_FILE)' -o '$(PREFIX)/$(TARGET)/bin/test-$(PKG).exe'
 endef
 
 $(PKG)_BUILD_x86_64-w64-mingw32 = $(subst @gcc-crt-config-opts@,--disable-lib32,$($(PKG)_BUILD_mingw-w64))
