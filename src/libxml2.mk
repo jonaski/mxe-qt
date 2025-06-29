@@ -26,7 +26,10 @@ define $(PKG)_BUILD
         -DLIBXML2_WITH_ZLIB=ON \
         -DLIBXML2_WITH_LZMA=ON \
         -DLIBXML2_WITH_ICONV=ON \
-        -DLIBXML2_WITH_ICU=OFF
+        -DLIBXML2_WITH_ICU=ON \
+        -DLIBXML2_WITH_CATALOG=OFF \
+        -DLIBXML2_WITH_PROGRAMS=OFF \
+        -DLIBXML2_WITH_TESTS=OFF
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
 endef
