@@ -30,3 +30,6 @@ define $(PKG)_BUILD
     '$(TARGET)-cmake' --build '$(BUILD_DIR)' -j '$(JOBS)'
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
 endef
+
+$(PKG)_BUILD_SHARED =
+$(PKG)_BUILD_STATIC =
