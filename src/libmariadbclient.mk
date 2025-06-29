@@ -18,7 +18,7 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
-    cd '$(BUILD_DIR)' && '$(TARGET)-cmake' \
+    cd '$(BUILD_DIR)' && CFLAGS='-std=c17' '$(TARGET)-cmake' \
         -DINSTALL_LIB_DIR="$(PREFIX)/$(TARGET)/lib" \
         -DINSTALL_BIN_DIR="$(PREFIX)/$(TARGET)/bin" \
         -DWITH_SSL=ON \
