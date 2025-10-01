@@ -1,0 +1,34 @@
+diff --git a/test/bioprinttest.c b/test/bioprinttest.c
+index f9bd916..0fe2023 100644
+--- a/test/bioprinttest.c
++++ b/test/bioprinttest.c
+@@ -542,19 +542,7 @@ static int test_n(int i)
+         ptrdiff_t t;
+     } n = { 0 }, std_n = { 0 };
+ 
+-#if defined(OPENSSL_SYS_WINDOWS)
+-    /*
+-     * MS CRT is special and throws an exception when %n is used even
+-     * in non-*_s versions of printf routines, and there is a special function
+-     * to enable %n handling.
+-     */
+-    _set_printf_count_output(1);
+-    if (_get_printf_count_output() == 0) {
+-        TEST_note("Can't enable %%n handling for snprintf"
+-                  ", skipping the checks against libc");
+-        skip_libc_check = true;
+-    }
+-#elif defined(__OpenBSD__)
++#if defined(__OpenBSD__)
+     {
+         static bool note_printed;
+ 
+@@ -567,7 +555,7 @@ static int test_n(int i)
+ 
+         skip_libc_check = true;
+     }
+-#endif /* defined(OPENSSL_SYS_WINDOWS) || defined(__OpenBSD__) */
++#endif /* defined(__OpenBSD__) */
+ 
+     memset(bio_buf, '@', sizeof(bio_buf));
+     memset(std_buf, '#', sizeof(std_buf));
