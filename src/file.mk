@@ -26,10 +26,10 @@ define $(PKG)_BUILD
     # version. Therefore we build a native one ourselves first.
 
     cp -Rp '$(1)' '$(1).native'
-    cd '$(1).native' && ./configure
+    cd '$(1).native' && ./configure --disable-libseccomp
     cd '$(1).native' && $(MAKE) -j '$(JOBS)'
 
-    cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS) CFLAGS='-DHAVE_PREAD -Wno-implicit-function-declaration -Wno-incompatible-pointer-types'
+    cd '$(1)' && ./configure $(MXE_CONFIGURE_OPTS) --disable-libseccomp CFLAGS='-DHAVE_PREAD -Wno-implicit-function-declaration -Wno-incompatible-pointer-types'
     $(MAKE) -C '$(1)' -j '$(JOBS)' FILE_COMPILE='$(1).native/src/file'
     $(MAKE) -C '$(1)' -j 1 install
 
