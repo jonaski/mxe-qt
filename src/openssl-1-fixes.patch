@@ -1,34 +1,13 @@
-diff --git a/test/bioprinttest.c b/test/bioprinttest.c
-index f9bd916..0fe2023 100644
---- a/test/bioprinttest.c
-+++ b/test/bioprinttest.c
-@@ -542,19 +542,7 @@ static int test_n(int i)
-         ptrdiff_t t;
-     } n = { 0 }, std_n = { 0 };
- 
--#if defined(OPENSSL_SYS_WINDOWS)
--    /*
--     * MS CRT is special and throws an exception when %n is used even
--     * in non-*_s versions of printf routines, and there is a special function
--     * to enable %n handling.
--     */
--    _set_printf_count_output(1);
--    if (_get_printf_count_output() == 0) {
--        TEST_note("Can't enable %%n handling for snprintf"
--                  ", skipping the checks against libc");
--        skip_libc_check = true;
--    }
--#elif defined(__OpenBSD__)
-+#if defined(__OpenBSD__)
-     {
-         static bool note_printed;
- 
-@@ -567,7 +555,7 @@ static int test_n(int i)
- 
-         skip_libc_check = true;
+diff --git a/ssl/quic/quic_reactor.c b/ssl/quic/quic_reactor.c
+index 1a95f13..d68adf9 100644
+--- a/ssl/quic/quic_reactor.c
++++ b/ssl/quic/quic_reactor.c
+@@ -91,7 +91,7 @@ static void rtor_configure_winsock(BIO_POLL_DESCRIPTOR *bpd)
+     if (bpd->type == BIO_POLL_DESCRIPTOR_TYPE_SOCK_FD) {
+         WSAIoctl(bpd->value.fd, SIO_UDP_CONNRESET, &bNewBehavior,
+             sizeof(bNewBehavior), NULL, 0, &dwBytesReturned, NULL, NULL);
+-        WSAIoctl(bpd->value.fd, SIO_UDP_NETRESET, &bNewBehavior,
++        WSAIoctl(bpd->value.fd, SIO_UDP_CONNRESET, &bNewBehavior,
+             sizeof(bNewBehavior), NULL, 0, &dwBytesReturned, NULL, NULL);
      }
--#endif /* defined(OPENSSL_SYS_WINDOWS) || defined(__OpenBSD__) */
-+#endif /* defined(__OpenBSD__) */
- 
-     memset(bio_buf, '@', sizeof(bio_buf));
-     memset(std_buf, '#', sizeof(std_buf));
+ }
