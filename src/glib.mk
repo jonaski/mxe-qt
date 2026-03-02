@@ -9,7 +9,6 @@ $(PKG)_CHECKSUM := d6eb74a4f4ffc0b56df79ae3a939463b1d92c623f6c167d51aab24e303a85
 $(PKG)_SUBDIR   := glib-$($(PKG)_VERSION)
 $(PKG)_FILE     := glib-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://download.gnome.org/sources/glib/$(call SHORT_PKG_VERSION,$(PKG))/$($(PKG)_FILE)
-$(PKG)_URL_2    := https://gitlab.gnome.org/GNOME/glib/-/archive/$($(PKG)_VERSION)/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc meson-conf dbus gettext libffi libiconv pcre2 zlib $(BUILD)~$(PKG)
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 
