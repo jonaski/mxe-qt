@@ -4,8 +4,8 @@ PKG             := quazip-qt6
 $(PKG)_WEBSITE  := https://github.com/stachenov/quazip
 $(PKG)_DESCR    := QuaZip Qt 6
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 1.7.1
-$(PKG)_CHECKSUM := e3c7220e66d9f8024ef4aa98befb2592fea219a01736a400b07b11aa60964d02
+$(PKG)_VERSION  := 1.7.2
+$(PKG)_CHECKSUM := 5240f4a3475648773ba10af8b0ebe549cbfc5d6de00470a517330a80068a4f78
 $(PKG)_GH_CONF  := stachenov/quazip/releases/latest, v
 $(PKG)_DEPS     := cc zlib qt6-qtbase qt6-qttools qt6-qtcore5compat
 
